@@ -21,6 +21,7 @@ from one import views as oneviews
 
 urlpatterns = [
     #re_path('',oneviews.login),
+    re_path(r'^$',oneviews.login),
     re_path('session_test',oneviews.session_test),
     re_path('index',oneviews.index),
     re_path('login',oneviews.login),
@@ -30,4 +31,5 @@ urlpatterns = [
     re_path('reqJson',oneviews.reqJson),
     re_path('user',oneviews.getuser),
     re_path('UserHistory', oneviews.userHistory),
+    re_path(r'^accounts/login/$',oneviews.login),
 ]

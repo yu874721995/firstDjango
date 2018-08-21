@@ -6,14 +6,19 @@ import json,time
 from one import models
 import requests
 from Public.JsonData import DateEncoder
-
+from django.contrib.auth.decorators import login_required
 
 user_list = []
-def index(request):
-    return render(request,'index.html')
 
 def login(request):
     return render(request,'login.html')
+
+def index(request):
+    session_user = request.session.get('username',None)
+    if session_user is None:
+        return render(request, 'login.html')
+    return render(request,'index.html')
+
 
 def goRegister(request):
     return render(request,'register.html')
@@ -29,7 +34,7 @@ def Loginup(request):
                 request.session['username'] = username
                 request.session['user_id'] = userid
                 request.session['is_login'] = True
-                request.session.set_expiry(10000)
+                request.session.set_expiry(0)
                 response = json.dumps({'status':1,'msg':'登录成功','data':username})
                 return HttpResponse(response)
             elif query[0]['password'] != password:
@@ -40,6 +45,7 @@ def Loginup(request):
             return render(request,'login.html')
     except BaseException as e:
         return render(request,'login.html', {})
+
 
 def register(request):
     username = request.POST.get('username',None)
@@ -101,6 +107,7 @@ def userHistory(request):
     return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data':user_history},cls=DateEncoder))
 
 #处理请求
+@login_required
 def reqJson(request):
     posturl = request.POST.get('url',None)
     geturl = posturl + '?'
