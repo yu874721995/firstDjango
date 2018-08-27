@@ -24,6 +24,10 @@ def goRegister(request):
     return render(request,'register.html')
 
 def Loginup(request):
+    ip = request.META['REMOTE_ADDR']
+    print (1,request,2,request.method,3,request.body,4,request.path_info,5,request.is_ajax(),6,ip)
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'status':100, 'msg': '请求方式错误'}))
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
     query = models.UserInfo.objects.filter(user=username).values()
@@ -38,6 +42,7 @@ def Loginup(request):
                 response = json.dumps({'status':1,'msg':'登录成功','data':username})
                 return HttpResponse(response)
             elif query[0]['password'] != password:
+                print ('--------------')
                 return HttpResponse(json.dumps({'status':2, 'msg': '密码错误'}))
         elif query.__len__() == 0:
             return HttpResponse(json.dumps({'status':3, 'msg': '用户未注册'}))

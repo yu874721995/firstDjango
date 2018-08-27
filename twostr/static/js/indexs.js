@@ -1,4 +1,4 @@
-function one(){$.post('http://127.0.0.1:8000/session_test',function (data) {
+function one(){$.post('http://192.168.30.252:9001/session_test',function (data) {
     console.log('+++++++++++++++++++++++'+data)
       var userid = data.data.userid;
       document.getElementById('msg').innerHTML=userid
@@ -14,7 +14,7 @@ function one(){$.post('http://127.0.0.1:8000/session_test',function (data) {
         userhistory(),username();
 })()
 function username() {
-        $.post('http://127.0.0.1:8000/user' , function (data) {
+        $.post('http://192.168.30.252:9001/user' , function (data) {
         var json_data = JSON.parse(data);
         var username = json_data.data.username;
         document.getElementById('msg').innerHTML = username;
@@ -23,7 +23,7 @@ function username() {
 
     function userhistory() {
         var _html = ''
-        $.post('http://127.0.0.1:8000/UserHistory' , function (data) {
+        $.post('http://192.168.30.252:9001/UserHistory' , function (data) {
         json_data = JSON.parse(data);
         console.log(json_data.data);
         for(i=0;i<json_data.data.length;i++){
@@ -75,14 +75,14 @@ function username() {
                 }
                 console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'post'};
-                $.post('http://127.0.0.1:8000/reqJson', req , function (data){
+                $.post('http://192.168.30.252:9001/reqJson', req , function (data){
                     userhistory();
                     var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
                     document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
                 });
             }else{
-                $.post('http://127.0.0.1:8000/reqJson', {url:url,key:key,value:value,type:'post'}, function (data){
+                $.post('http://192.168.30.252:9001/reqJson', {url:url,key:key,value:value,type:'post'}, function (data){
                      userhistory();
                    var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
@@ -100,14 +100,14 @@ function username() {
                 }
                 console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'get'};
-                $.post('http://127.0.0.1:8000/reqJson', req , function (data){
+                $.post('http://192.168.30.252:9001/reqJson', req , function (data){
                      userhistory();
                     var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
                     document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
                 });
             }else{
-                $.post('http://127.0.0.1:8000/reqJson', {url:url,key:key,value:value,type:'get'}, function (data){
+                $.post('http://192.168.30.252:9001/reqJson', {url:url,key:key,value:value,type:'get'}, function (data){
                      userhistory();
                    var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)

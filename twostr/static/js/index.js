@@ -8,7 +8,7 @@ function login() {
     else if(!pwd){
         alert('密码为空，请输入')
     }else {
-        $.post('http://127.0.0.1:8000/Loginup', {
+        $.post('http://192.168.30.252:9001/Loginup', {
             username: $('#user').val(),
             password: $('#pwd').val()
         }, function (data) {
@@ -31,7 +31,7 @@ function login() {
     }
 }
 function ss(a,b,c){
-    $.get("http://127.0.0.1:8000/delete?userid="+a+'&pwd='+b+'&id='+c, function(data){
+    $.get("http://192.168.30.252:9001/delete?userid="+a+'&pwd='+b+'&id='+c, function(data){
         console.log(data)
         window.location.reload();
     })
@@ -46,14 +46,14 @@ function register() {
     else if(!pwd){
         alert('密码为空，请输入')
     }else {
-        $.post('http://127.0.0.1:8000/register', {
+        $.post('http://192.168.30.252:9001/register', {
             username: $('#user').val(),
             password: $('#pwd').val()
         }, function (data) {
             //window.location.reload('localhost:8000/register');
             if (JSON.parse(data).status == 1) {
                 var msg = JSON.parse(data).data
-                window.location.href = 'http://127.0.0.1:8000/index?ss=' + msg;
+                window.location.href = 'http://192.168.30.252:9001/index?ss=' + msg;
             } else if (JSON.parse(data).status == 2) {
                 alert('用户已注册')
             } else {
@@ -63,8 +63,8 @@ function register() {
     }
 }
 function goRegister() {
-    window.location.href = 'http://127.0.0.1:8000/goRegister'
+    window.location.href = 'http://192.168.30.252:9001/goRegister'
 }
 function back() {
-    window.location.href = 'http://127.0.0.1:8000/login'
+    window.location.href = 'http://192.168.30.252:9001/login'
 }
