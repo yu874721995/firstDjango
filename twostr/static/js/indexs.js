@@ -26,8 +26,8 @@ function username() {
         $.post('http://192.168.30.252:9001/UserHistory' , function (data) {
         json_data = JSON.parse(data);
         console.log(json_data.data);
-        for(i=0;i<json_data.data.length;i++){
-            console.log(json_data.data)
+        for(var i=json_data.data.length-1;i>=0;i--){
+            console.log(i,json_data.data)
             _html += '<tr><a href="#" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'</tr>'
         }
         $("#historys").html(_html)
@@ -36,15 +36,15 @@ function username() {
     function getBody(intstt) {
         $('#table').html('<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>')
-        console.log(json_data.data[intstt].host)
+        console.log('------',json_data.data[intstt].host)
         document.getElementById('url').value = json_data.data[intstt].host;
         var len = Object.keys(json_data.data[intstt].body);
         var s = 0;
         for(var i in json_data.data[intstt].body)
         {
-            console.log(i);
+            console.log('~~~~~~~~~~~~~',i);
             document.getElementsByClassName('key')[s].value += i;
-            console.log(json_data.data[intstt].body[i]);
+            console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
             document.getElementsByClassName('value')[s].value += json_data.data[intstt].body[i];
             s ++
             if (s == len.length){
@@ -52,8 +52,9 @@ function username() {
             }
             add();
         }
-        response_body = json_data.data[intstt].response_body
-        var response_bodys = formatJson(response_body)
+        r_body = json_data.data[intstt].response_body
+        console.log(r_body)
+        var response_bodys = formatJson(r_body)
         document.getElementById('response_text').innerHTML = '<pre style="word-break:break-all;display:inline-block;">'+response_bodys+'<pre/>';
     }
 

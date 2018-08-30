@@ -40,6 +40,15 @@
     vertical-align:top;
 
     }
+    #request-body,#request-bodys{
+        height: 150px;
+        width: 100%;
+        display: inline-block;
+        color: #D2691E;
+        border:2px solid cornflowerblue;
+        overflow:auto;
+        word-break:break-all;
+    }
     #response_text{
       height: 300px;
       width: 100%;
@@ -53,7 +62,7 @@
     .body_big{
       position: relative;
       display: inline-block;
-      height: 200px;
+      height: 150px;
       width: 650px;
     }
     .body{
@@ -116,6 +125,10 @@
     </div>
     <div>
     </div>
+      <div>文本格式参数</div>
+      <div id="request-body">
+          <textarea id="request-bodys" cols="50" rows="10"></textarea>
+      </div>
     <div>
       <div id="response"><span>返回参数：</span></div><div id="response_text"></div>
   </div>

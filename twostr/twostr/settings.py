@@ -40,12 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'one',
     'corsheaders',
+    'django_apscheduler',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', #------------------配置跨域请求中间件
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+'''配置跨域请求中间件参数------begin'''
 CORS_ALLON_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ('*')
@@ -65,7 +67,6 @@ CORS_ALLOW_METHODS = (
     'PUT',
     'VIEW',
 )
-
 CORS_ALLOW_HEADERS = (
     'XMLHttpRequest',
     'X_FILENAME',
@@ -78,9 +79,14 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+'''------------end------------'''
 
 
+CRONJOBS = [
+    ('* * * * * *','one.siteathome.task')
+]
 
+'''配置session参数'''
 SESSION_ENGIN = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = "sessionid"
 SESSION_COOKIE_AGE = 10

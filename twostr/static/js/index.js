@@ -9,13 +9,13 @@ function login() {
         alert('密码为空，请输入')
     }else {
         $.post('http://192.168.30.252:9001/Loginup', {
-            username: $('#user').val(),
+            userName: $('#user').val(),
             password: $('#pwd').val()
         }, function (data) {
             console.log(data)
             if (JSON.parse(data).status == 1) {
                 var msg = JSON.parse(data).data;
-                window.location.href = 'http://127.0.0.1:8000/index';
+                window.location.href = 'http://192.168.30.252:9001/index';
                 // $.post('http://127.0.0.1:8000/session_test',function (data) {
                 //     console.log(data)
                 //     var s = data.data;
@@ -47,7 +47,7 @@ function register() {
         alert('密码为空，请输入')
     }else {
         $.post('http://192.168.30.252:9001/register', {
-            username: $('#user').val(),
+            userName: $('#user').val(),
             password: $('#pwd').val()
         }, function (data) {
             //window.location.reload('localhost:8000/register');

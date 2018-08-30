@@ -28,8 +28,9 @@ def Loginup(request):
     print (1,request,2,request.method,3,request.body,4,request.path_info,5,request.is_ajax(),6,ip)
     if request.method != 'POST':
         return HttpResponse(json.dumps({'status':100, 'msg': '请求方式错误'}))
-    username = request.POST.get('username', None)
+    username = request.POST.get('userName', None)
     password = request.POST.get('password', None)
+    print (username,password,type(username),type(password))
     query = models.UserInfo.objects.filter(user=username).values()
     try:
         if query.__len__() > 0:
@@ -38,7 +39,7 @@ def Loginup(request):
                 request.session['username'] = username
                 request.session['user_id'] = userid
                 request.session['is_login'] = True
-                request.session.set_expiry(0)
+                request.session.set_expiry(30 * 60)
                 response = json.dumps({'status':1,'msg':'登录成功','data':username})
                 return HttpResponse(response)
             elif query[0]['password'] != password:
@@ -47,13 +48,15 @@ def Loginup(request):
         elif query.__len__() == 0:
             return HttpResponse(json.dumps({'status':3, 'msg': '用户未注册'}))
         else:
+            print ('--------')
             return render(request,'login.html')
     except BaseException as e:
-        return render(request,'login.html', {})
+        print(e)
+        return render(request,'login.html', {},)
 
 
 def register(request):
-    username = request.POST.get('username',None)
+    username = request.POST.get('userName',None)
     password = request.POST.get('password',None)
     query = models.UserInfo.objects.filter(user=username)
     print ('-------------------------已存在{}个用户'.format(list(query).__len__()))
@@ -62,12 +65,14 @@ def register(request):
                                         'msg':'用户已注册'}))
     elif query.__len__() == 0:
         try:
+            print (username,password)
             models.UserInfo.objects.create(user=username, password=password)
-            session_username = models.UserInfo.objects.filter(user=username)
-            request.session['user_id'] = session_username[0][0]
-            request.session['username'] = session_username[0][1]
+            session_username = models.UserInfo.objects.filter(user=username).values()
+            print ('注册成功:注册账号------',session_username[0]['user'])
+            request.session['user_id'] = session_username[0]['id']
+            request.session['username'] = session_username[0]['user']
             request.session['is_login'] = True
-            request.session.set_expiry(1000)
+            request.session.set_expiry(30 * 60)
             return HttpResponse(json.dumps({'status': 1,
                                             'msg': '注册成功','data':username}))
         except Exception as e:
@@ -78,8 +83,6 @@ def register(request):
 def session_test(request):
     username = request.session.get('username',None)#取这个key的值，如果不存在就为None
     userid = request.session.get('userid',None)
-    #s = request.session.session_key
-    #request.session.clear_expired()
     return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':{'username':username,'userid':userid}}))
 
 def getuser(request):
@@ -112,12 +115,22 @@ def userHistory(request):
     return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data':user_history},cls=DateEncoder))
 
 #处理请求
-@login_required
 def reqJson(request):
     posturl = request.POST.get('url',None)
     geturl = posturl + '?'
     body = request.POST.getlist('data[]',None)
-    user_id = request.session.get('user_id', '1')
+    user_id = request.session.get('user_id',None)
+    token = request.POST.get('token',None)
+    headers = {}
+    if user_id is None:
+        return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
+    if not token is None:
+        login_token = findToken(user_id)
+        if  not login_token:
+            return HttpResponse(json.dumps({'status': 5, 'msg': '没有找到token或token已失效'}))
+        headers['Authorization'] = login_token
+    else:
+        pass
     type = request.POST.get('type',None)
     print ('request_body:','url:',posturl,'body:',body,'user_id:',user_id,'type:',type)
     if user_id == '1':
@@ -127,7 +140,22 @@ def reqJson(request):
         data[i.split(':')[0]] = i.split(':')[1]
         geturl += i.split(':')[0] + '=' + i.split(':')[1]
     resopnse_body = ''
-    #存入历史
+    # 发送请求
+    if type == 'post':
+        try:
+            r = requests.post(posturl, data=data)
+            resopnse_body = r.json()
+            print (r.cookies)
+        except Exception as e:
+            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
+    elif type == 'get':
+        try:
+            r = requests.get(geturl)
+            resopnse_body = r.json()
+        except Exception as e:
+            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
+    print (resopnse_body)
+    # 存入历史
     try:
         dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'type':type}
         print ('------------------------------------',resopnse_body)
@@ -140,21 +168,18 @@ def reqJson(request):
             models.user_body.objects.create(**dic)
     except Exception as e:
         return HttpResponse(json.dumps({'status': 1, 'msg':e,}))
-    # 发送请求
-    if type == 'post':
-        try:
-            r = requests.post(posturl, data=data)
-            resopnse_body = r.json()
-        except Exception as e:
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    elif type == 'get':
-        try:
-            r = requests.get(geturl)
-            resopnse_body = r.json()
-        except Exception as e:
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    print (resopnse_body)
     return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': resopnse_body}))
+
+def findToken(user_id):
+    token_body = models.user_host.objects.filter(user_id=user_id).order_by('-create_date')
+    for i in token_body:
+        try:
+            if i[3]['token']:
+                token = 'Bearer '+i[3]['token']
+                return token
+        except:
+            return False
+
 
 
 def x():
