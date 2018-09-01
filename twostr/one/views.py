@@ -8,6 +8,7 @@ import requests
 from Public.JsonData import DateEncoder
 from django.contrib.auth.decorators import login_required
 
+
 user_list = []
 
 def login(request):
@@ -39,7 +40,7 @@ def Loginup(request):
                 request.session['username'] = username
                 request.session['user_id'] = userid
                 request.session['is_login'] = True
-                request.session.set_expiry(30 * 60)
+                request.session.set_expiry(60 * 60 *12)
                 response = json.dumps({'status':1,'msg':'登录成功','data':username})
                 return HttpResponse(response)
             elif query[0]['password'] != password:
@@ -52,7 +53,7 @@ def Loginup(request):
             return render(request,'login.html')
     except BaseException as e:
         print(e)
-        return render(request,'login.html', {},)
+        return render(request,'login.html', {},e)
 
 
 def register(request):
@@ -72,12 +73,12 @@ def register(request):
             request.session['user_id'] = session_username[0]['id']
             request.session['username'] = session_username[0]['user']
             request.session['is_login'] = True
-            request.session.set_expiry(30 * 60)
+            request.session.set_expiry(60 * 60 *12)
             return HttpResponse(json.dumps({'status': 1,
                                             'msg': '注册成功','data':username}))
         except Exception as e:
             return HttpResponse(json.dumps({'status': 3,
-                                            'msg': '注册失败'}))
+                                            'msg': '注册失败'}),e)
 
 
 def session_test(request):
@@ -94,14 +95,14 @@ def userHistory(request):
     username = request.session.get('username',1)
     if username == 1:
         return HttpResponse(json.dumps({'status': 1, 'msg': '登录过期'}))
-    user_id = models.UserInfo.objects.get(user=username).id
-    user_host_history = models.user_host.objects.filter(userid=user_id).values()
+    user_id = models.UserInfo.objects.get(user=username).id  #查用户ID
+    user_host_history = models.user_host.objects.filter(userid=user_id).values() #查当前用户的所有host
     user_history = []
-    for i in user_host_history:
+    for i in user_host_history: #查询每一个host对应的body
         everyhost = {}
         body = {}
-        host_id = i['id']
-        body_init = models.user_body.objects.filter(host_id_id=host_id).values()
+        host_id = i['id']#host_id
+        body_init = models.user_body.objects.filter(host_id=host_id).values()#查每一条host对应的所有body
         for everybody in body_init:
             body[everybody['key']] = everybody['value']
         everyhost['id'] = i['id']
@@ -109,6 +110,7 @@ def userHistory(request):
         everyhost['body'] = body
         everyhost['create_date'] = i['create_date']
         everyhost['response_body'] = i['response_body']
+        everyhost['request_body'] = i['request_body'] or ''
         everyhost['type'] = i['type']
         user_history.append(everyhost)
     print (user_history)
@@ -116,12 +118,16 @@ def userHistory(request):
 
 #处理请求
 def reqJson(request):
+    print ('request_body:',request.body)
     posturl = request.POST.get('url',None)
     geturl = posturl + '?'
     body = request.POST.getlist('data[]',None)
     user_id = request.session.get('user_id',None)
+    types = request.POST.get('type', None)
     token = request.POST.get('token',None)
     headers = {}
+    data = {}
+    resopnse_body = ''
     if user_id is None:
         return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
     if not token is None:
@@ -131,43 +137,63 @@ def reqJson(request):
         headers['Authorization'] = login_token
     else:
         pass
-    type = request.POST.get('type',None)
-    print ('request_body:','url:',posturl,'body:',body,'user_id:',user_id,'type:',type)
     if user_id == '1':
         return HttpResponse(json.dumps({'status': 1, 'msg': '登录超时'}))
-    data = {}
-    for i in body:
-        data[i.split(':')[0]] = i.split(':')[1]
-        geturl += i.split(':')[0] + '=' + i.split(':')[1]
-    resopnse_body = ''
+    try:
+        if body:
+            for i in body:
+                data[i.split(':')[0]] = i.split(':')[1]
+                geturl += i.split(':')[0] + '=' + i.split(':')[1]
+        else:
+            body = request.POST.get('data',None)
+            req_data = eval(body)
+        if types == 'post':
+            try:
+                if data:
+                    r = requests.post(posturl, data=data)
+                    resopnse_body = r.json()
+                else:
+                    r = requests.post(posturl, data=req_data)
+                    resopnse_body = r.json()
+            except Exception as e:
+                return HttpResponse(json.dumps({'status': 500, 'msg': 'error'}))
+        elif type == 'get':
+            try:
+                r = requests.get(geturl)
+                resopnse_body = r.json()
+            except Exception as e:
+                return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
+    except Exception as e:
+        return HttpResponse(e)
     # 发送请求
-    if type == 'post':
-        try:
-            r = requests.post(posturl, data=data)
-            resopnse_body = r.json()
-            print (r.cookies)
-        except Exception as e:
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    elif type == 'get':
-        try:
-            r = requests.get(geturl)
-            resopnse_body = r.json()
-        except Exception as e:
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
     print (resopnse_body)
     # 存入历史
     try:
-        dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'type':type}
-        print ('------------------------------------',resopnse_body)
+        dic = {
+            'host': posturl,
+            'userid': user_id,
+            'response_body':resopnse_body,
+            'request_body':req_data,
+            'type':types
+        }
+        print ('------------------------------------resopnse_body:',resopnse_body)
         models.user_host.objects.create(**dic)
         #存入body
         host = models.user_host.objects.filter(host=posturl).order_by('-create_date')
         host_id = host.values()[0]['id']
-        for i in body:
-            dic = {'key':i.split(':')[0],'value':i.split(':')[1],'host_id_id':host_id}
+        if isinstance(req_data,dict):
+            pass
+        else:
+            for i in body:
+                dic = {
+                    'key':i.split(':',1)[0],
+                    'value':i.split(':',1)[1],
+                    'host_id':host_id
+                       }
+            print (dic)
             models.user_body.objects.create(**dic)
     except Exception as e:
-        return HttpResponse(json.dumps({'status': 1, 'msg':e,}))
+        return HttpResponse(e)
     return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': resopnse_body}))
 
 def findToken(user_id):

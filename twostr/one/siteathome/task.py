@@ -31,5 +31,7 @@ def deletesession():
                 cursor.execute(sqls %i[0])
                 connect.commit()
                 print ('-------------------clear session------------------')
+                connect.close()
+                cursor.close()
             except :
                 connect.rollback()

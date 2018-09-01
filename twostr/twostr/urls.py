@@ -47,7 +47,7 @@ from one.siteathome import task
 sched = BackgroundScheduler()
 sched.add_jobstore(DjangoJobStore(),'default')
 
-@register_job(sched,'cron',second='10')
+@register_job(sched,'cron',minute ='30')
 def my_task():
     task.deletesession()
 try:

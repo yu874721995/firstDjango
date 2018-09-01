@@ -7,7 +7,11 @@ function one(){$.post('http://192.168.30.252:9001/session_test',function (data) 
     function add(){
         var html = '<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>';
-        $("#table").append(html);
+        if($('#mod-1').css('display') =='none') {
+            $("#table2").append(html);
+        }else{
+            $("#table1").append(html);
+        }
     }
     //请求用户名
 (function(){
@@ -38,6 +42,7 @@ function username() {
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>')
         console.log('------',json_data.data[intstt].host)
         document.getElementById('url').value = json_data.data[intstt].host;
+        document.getElementById('request-bodys').value = json_data.data[intstt].request_body;
         var len = Object.keys(json_data.data[intstt].body);
         var s = 0;
         for(var i in json_data.data[intstt].body)
@@ -69,26 +74,39 @@ function username() {
             var postdata = [];
             var key = $('.key');
             var value = $('.value');
-            if(typeof(key)=='object' && typeof(value)=='object'){
-                for(var i=0;i<key.length;i++){
-                    var mn =key[i].value +':'+value[i].value;
-                    postdata.push(mn);
-                }
-                console.log(JSON.stringify(postdata))
-                var req = {url:url,data:postdata,type:'post'};
-                $.post('http://192.168.30.252:9001/reqJson', req , function (data){
+            var requests_body = $('#request-bodys').val();
+            if (requests_body){
+                 console.log(requests_body,typeof(requests_body));
+                requests_body = Object(requests_body);
+                 var req = {url:url,data:requests_body,type:'post'};
+                 $.post('http://192.168.30.252:9001/reqJson', req , function (data){
                     userhistory();
                     var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
                     document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
                 });
             }else{
-                $.post('http://192.168.30.252:9001/reqJson', {url:url,key:key,value:value,type:'post'}, function (data){
-                     userhistory();
-                   var json_response = JSON.parse(data);
-                    var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
-                })
+                if(typeof(key)=='object' && typeof(value)=='object' && !requests_body){
+                    for(var i=0;i<key.length;i++){
+                        var mn =key[i].value +':'+value[i].value;
+                        postdata.push(mn);
+                    }
+                    console.log(JSON.stringify(postdata))
+                    var req = {url:url,data:postdata,type:'post'};
+                    $.post('http://192.168.30.252:9001/reqJson', req , function (data){
+                        userhistory();
+                        var json_response = JSON.parse(data);
+                        var str_rep = formatJson(json_response.data)
+                        document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
+                    });
+                }else{
+                    $.post('http://192.168.30.252:9001/reqJson', {url:url,key:key,value:value,type:'post'}, function (data){
+                         userhistory();
+                       var json_response = JSON.parse(data);
+                        var str_rep = formatJson(json_response.data)
+                        document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
+                    })
+                }
             }
         }else{
             var postdata = [];
