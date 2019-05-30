@@ -1,5 +1,5 @@
 function one(){$.post('http://192.168.10.123:9001/session_test',function (data) {
-    console.log('+++++++++++++++++++++++'+data)
+    // console.log('+++++++++++++++++++++++'+data)
       var userid = data.data.userid;
       document.getElementById('msg').innerHTML=userid
     })}
@@ -30,9 +30,9 @@ function username() {
         var _html = ''
         $.post('http://192.168.10.123:9001/UserHistory' , function (data) {
         json_data = JSON.parse(data);
-        console.log(json_data.data);
+        // console.log(json_data.data);
         for(var i=json_data.data.length-1;i>=0;i--){
-            console.log(i,json_data.data)
+            // console.log(i,json_data.data)
             _html += '<tr><a href="#" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'</tr>'
         }
         $("#historys").html(_html)
@@ -41,16 +41,20 @@ function username() {
     function getBody(intstt) {
         $('#table').html('<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>'+'<th><button id="add" onclick="add()">添加参数</button></th>')
-        console.log('------',json_data.data[intstt].host)
+        $('#table-header').html('<tr> <th>key:<input class="key-header" type="text" value=""></th><th>value:<input class="value-header" type="text"value=""></th>' +
+            '<th><button class="deletes" id="clear" onclick="deleteRow2(this)">--</button></th></tr>'+'<th><button id="add" onclick="add_header()">添加参数</button></th>')
+        // console.log('------',json_data.data[intstt].host)
         document.getElementById('url').value = json_data.data[intstt].host;
         document.getElementById('CaseName').value = json_data.data[intstt].CaseName;
         var len = Object.keys(json_data.data[intstt].body);
+        var header = Object.keys(json_data.data[intstt].header);
         var s = 0;
+        var n = 0;
         for(var i in json_data.data[intstt].body)
         {
-            console.log('~~~~~~~~~~~~~',i);
+            // console.log('~~~~~~~~~~~~~',i);
             document.getElementsByClassName('key')[s].value += i;
-            console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
+            // console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
             document.getElementsByClassName('value')[s].value += json_data.data[intstt].body[i];
             s ++
             if (s == len.length){
@@ -58,8 +62,18 @@ function username() {
             }
             add();
         }
+        for(var s in json_data.data[intstt].header){
+            document.getElementsByClassName('key-header')[n].value += i;
+            // console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
+            document.getElementsByClassName('value-header')[n].value += json_data.data[intstt].header[s];
+            n ++
+            if (n == len.length){
+                break
+            }
+            add();
+        }
         r_body = json_data.data[intstt].response_body
-        console.log(r_body)
+        // console.log(r_body)
         var response_bodys = formatJson(r_body)
         document.getElementById('response_text').innerHTML = '<pre style="word-break:break-all;display:inline-block;">'+response_bodys+'<pre/>';
     }
@@ -78,6 +92,9 @@ function username() {
     }
 
     function reqJson() {
+        if(/^[\u4e00-\u9fa5]+$/.test(str)){
+            alert("请不要输入汉字")
+            }
         var url = $('#url').val();
         var CaseName = $('#CaseName').val();
         if($('input[name="name1"]:checked').val() == 'post'){
@@ -87,14 +104,19 @@ function username() {
             var value = $('.value');
             var header_key = $('.key-header');
             var header_value = $('.value-header');
-            console.log('-----1---1--1-1-1--1-1-1--1-1-1--1--1',header_key,header_value);
+            // console.log('-----1---1--1-1-1--1-1-1--1-1-1--1--1'+header_key+header_value);
             if(typeof(key)=='object' && typeof(value)=='object'){
                 for(var i=0;i<key.length;i++){
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                console.log(JSON.stringify(postdata))
-                var req = {url:url,data:postdata,type:'post',CaseName:CaseName};
+                if(typeof(key)=='object' && typeof(value)=='object'){
+                    for(var s=0;s<header_key.length;s++){
+                        var mu =header_key[s].value +':'+header_value[s].value;
+                        postheader.push(mu);
+                        }
+                }
+                var req = {url:url,data:JSON.stringify(postdata),header:JSON.stringify(postheader),type:'post',CaseName:CaseName};
                 $.post('http://192.168.10.123:9001/reqJson', req , function (data){
                     userhistory();
                     var json_response = JSON.parse(data);
@@ -118,7 +140,7 @@ function username() {
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                console.log(JSON.stringify(postdata))
+                // console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'get',CaseName:CaseName};
                 $.post('http://192.168.10.123:9001/reqJson', req , function (data){
                      userhistory();
@@ -151,7 +173,7 @@ function username() {
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                console.log(JSON.stringify(postdata))
+                // console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'post',CaseName:CaseName};
                 $.post('http://192.168.10.123:9001/SaveTestCase', req , function (data){
 
@@ -170,7 +192,7 @@ function username() {
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                console.log(JSON.stringify(postdata))
+                // console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'get'};
                 $.post('http://192.168.10.123:9001/SaveTestCase', req , function (data){
 
@@ -192,13 +214,13 @@ var formatJson = function (json, options) {
          options = options || {};
         options.newlineAfterColonIfBeforeBraceOrBracket = (options.newlineAfterColonIfBeforeBraceOrBracket === true) ? true : false;
         options.spaceAfterColon = (options.spaceAfterColon === false) ? false : true;
-        console.log(typeof json)
+        // console.log(typeof json)
         if (typeof json !== 'string') {
-            console.log(typeof json)
+            // console.log(typeof json)
             json = JSON.stringify(json);
          } else {
             try{
-                console.log(typeof json);
+                // console.log(typeof json);
                 json = JSON.parse(json);
                 json = JSON.stringify(json);
             }catch (error){

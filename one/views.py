@@ -100,26 +100,32 @@ def userHistory(request):
     for i in user_host_history:
         everyhost = {}
         body = {}
+        header = {}
         host_id = i['id']
-        body_init = models.user_body.objects.filter(host_id_id=host_id).values()
+        body_init = models.user_body.objects.filter(host_id_id=host_id,type=1).values()
+        header_init = models.user_body.objects.filter(host_id_id=host_id,type=2).values()
         for everybody in body_init:
             body[everybody['key']] = everybody['value']
+        for everheader in header_init:
+            header[everheader['key']] = everheader['value']
         everyhost['id'] = i['id']
         everyhost['host'] = i['host']
         everyhost['body'] = body
+        everyhost['header'] = header
         everyhost['create_date'] = i['create_date']
         everyhost['response_body'] = i['response_body']
         everyhost['type'] = i['method']
         everyhost['CaseName'] = i['casename']
         user_history.append(everyhost)
-    print (user_history)
     return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data':user_history},cls=DateEncoder))
 
 #处理请求
 def reqJson(request):
+    print('request_body',request.POST)
     posturl = request.POST.get('url',None)
     geturl = posturl + '?'
-    body = request.POST.getlist('data[]',None)
+    body = request.POST.getlist('data',None)
+    header = request.POST.getlist('header',None)
     user_id = request.session.get('user_id',None)
     token = request.POST.get('token',None)
     CaseName = request.POST.get('CaseName',None)
@@ -133,24 +139,29 @@ def reqJson(request):
         headers['Authorization'] = login_token
     else:
         pass
-    type = request.POST.get('type',None)
-    print ('request_body:','url:',posturl,'body:',body,'user_id:',user_id,'type:',type)
+    types = request.POST.get('type',None)
     if user_id == '1':
         return HttpResponse(json.dumps({'status': 1, 'msg': '登录超时'}))
     data = {}
+    body = json.loads(body[0])
     for i in body:
         data[i.split(':')[0]] = i.split(':')[1]
         geturl += i.split(':')[0] + '=' + i.split(':')[1]
+    header = json.loads(header[0])
+    for i in header:
+        headers[i.split(':')[0]] = i.split(':')[1]
     resopnse_body = ''
     # 发送请求
-    if type == 'post':
+    print('发送请求的参数:','url:',posturl,'data：',data,'header:',headers)
+    if types == 'post':
         try:
-            r = requests.post(posturl, data=data)
+            r = requests.post(posturl, data=data,headers=headers)
             resopnse_body = r.json()
             print (r.cookies)
         except Exception as e:
+            print('error--------------',e)
             return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    elif type == 'get':
+    elif types == 'get':
         try:
             r = requests.get(geturl)
             resopnse_body = r.json()
@@ -159,14 +170,19 @@ def reqJson(request):
     print (resopnse_body)
     # 存入历史
     try:
-        dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'method':type,'casename':CaseName}
+        dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'method':types,'casename':CaseName}
         print ('------------------------------------',resopnse_body)
         models.user_host.objects.create(**dic)
-        #存入body
+
         host = models.user_host.objects.filter(host=posturl).order_by('-create_date')
         host_id = host.values()[0]['id']
+        # 存入body
         for i in body:
-            dic = {'key':i.split(':')[0],'value':i.split(':')[1],'host_id_id':host_id}
+            dic = {'key':i.split(':')[0],'value':i.split(':')[1],'host_id_id':host_id,'type':1}
+            models.user_body.objects.create(**dic)
+        #存入header
+        for i in header:
+            dic = {'key': i.split(':')[0], 'value': i.split(':')[1], 'host_id_id': host_id, 'type': 2}
             models.user_body.objects.create(**dic)
     except Exception as e:
         return HttpResponse(json.dumps({'status': 1, 'msg':e,}))

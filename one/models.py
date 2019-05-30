@@ -21,6 +21,7 @@ class user_body(models.Model):
     key = models.CharField(max_length=200,blank=False)
     value = models.CharField(max_length=200,blank=False)
     host_id = models.ForeignKey('user_host',on_delete=models.CASCADE)
+    type = models.CharField(max_length=10,default=1)
 
 class user_TestCase_host(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
