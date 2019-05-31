@@ -79,6 +79,17 @@ def register(request):
             return HttpResponse(json.dumps({'status': 3,
                                             'msg': '注册失败'}))
 
+def deletecase(request):
+    user_id = request.session.get('user_id', None)
+    if user_id is None or user_id == '1':
+        return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
+    case_id = request.POST.get('caseId',None)
+    print('request_body:',request.POST)
+    print(case_id)
+    models.user_body.objects.filter(host_id_id=case_id).update(status=0)
+    models.user_host.objects.filter(id=case_id).update(status=0)
+    return HttpResponse(json.dumps({'status':1,'msg':'操作成功'}))
+
 
 def session_test(request):
     username = request.session.get('username',None)#取这个key的值，如果不存在就为None
@@ -95,15 +106,15 @@ def userHistory(request):
     if username == 1:
         return HttpResponse(json.dumps({'status': 1, 'msg': '登录过期'}))
     user_id = models.UserInfo.objects.get(username=username).id
-    user_host_history = models.user_host.objects.filter(userid=user_id).values()
+    user_host_history = models.user_host.objects.filter(userid=user_id,status=1).values()
     user_history = []
     for i in user_host_history:
         everyhost = {}
         body = {}
         header = {}
         host_id = i['id']
-        body_init = models.user_body.objects.filter(host_id_id=host_id,type=1).values()
-        header_init = models.user_body.objects.filter(host_id_id=host_id,type=2).values()
+        body_init = models.user_body.objects.filter(host_id_id=host_id,type=1,status=1).values()
+        header_init = models.user_body.objects.filter(host_id_id=host_id,type=2,status=1).values()
         for everybody in body_init:
             body[everybody['key']] = everybody['value']
         for everheader in header_init:
@@ -126,11 +137,11 @@ def reqJson(request):
     geturl = posturl + '?'
     body = request.POST.getlist('data',None)
     header = request.POST.getlist('header',None)
-    user_id = request.session.get('user_id',None)
     token = request.POST.get('token',None)
     CaseName = request.POST.get('CaseName',None)
     headers = {}
-    if user_id is None:
+    user_id = request.session.get('user_id', None)
+    if user_id is None or user_id == '1':
         return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
     if not token is None:
         login_token = findToken(user_id)
@@ -140,8 +151,6 @@ def reqJson(request):
     else:
         pass
     types = request.POST.get('type',None)
-    if user_id == '1':
-        return HttpResponse(json.dumps({'status': 1, 'msg': '登录超时'}))
     data = {}
     body = json.loads(body[0])
     for i in body:
@@ -156,8 +165,8 @@ def reqJson(request):
     if types == 'post':
         try:
             r = requests.post(posturl, data=data,headers=headers)
+            print(r)
             resopnse_body = r.json()
-            print (r.cookies)
         except Exception as e:
             print('error--------------',e)
             return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))

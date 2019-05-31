@@ -33,7 +33,8 @@ urlpatterns = [
     re_path('user',indexviews.getuser),
     re_path('UserHistory', indexviews.userHistory),
     re_path(r'^accounts/login/$',indexviews.login),
-    re_path('SaveTestCase',SaveCase().saveTestCase)
+    re_path('SaveTestCase',SaveCase().saveTestCase),
+    re_path('deletecase',indexviews.deletecase),
 ]
 
 

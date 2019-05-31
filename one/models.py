@@ -4,11 +4,13 @@ import django.utils.timezone as timezone
 
 class UserInfo(models.Model):
     id = models.AutoField(primary_key=True,blank=False)
+    status = models.CharField(max_length=20, default=1)
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
 # Create your models here.
 class user_host(models.Model):
     id = models.AutoField(primary_key=True,blank=False)
+    status = models.CharField(max_length=20,default=1)
     host = models.CharField(max_length=200,blank=False)
     create_date = models.DateTimeField(default=timezone.now)
     response_body = models.TextField(max_length=200,default='ZZZ')
@@ -18,6 +20,7 @@ class user_host(models.Model):
 
 class user_body(models.Model):
     id = models.AutoField(primary_key=True,blank=False)
+    status = models.CharField(max_length=20, default=1)
     key = models.CharField(max_length=200,blank=False)
     value = models.CharField(max_length=200,blank=False)
     host_id = models.ForeignKey('user_host',on_delete=models.CASCADE)
@@ -25,6 +28,7 @@ class user_body(models.Model):
 
 class user_TestCase_host(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
+    status = models.CharField(max_length=20, default=1)
     caseName = models.CharField(max_length=200, blank=False)
     host = models.CharField(max_length=200, blank=False)
     create_date = models.DateTimeField(default=timezone.now)
@@ -33,12 +37,14 @@ class user_TestCase_host(models.Model):
 
 class user_TestCase_body(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
+    status = models.CharField(max_length=20, default=1)
     key = models.CharField(max_length=200, blank=False)
     value = models.CharField(max_length=200, blank=False)
     host_id = models.ForeignKey('user_TestCase_host', on_delete=models.CASCADE)
 
 class user_Case_Assert(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
+    status = models.CharField(max_length=20, default=1)
     Assert = models.CharField(max_length=200, blank=False)
     host_id = models.ForeignKey('user_TestCase_host', on_delete=models.CASCADE)
 

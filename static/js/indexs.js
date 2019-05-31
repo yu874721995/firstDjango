@@ -3,7 +3,6 @@ function one(){$.post('http://192.168.10.123:9001/session_test',function (data) 
       var userid = data.data.userid;
       document.getElementById('msg').innerHTML=userid
     })}
-
     function add(){
         var html = '<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>';
@@ -25,7 +24,6 @@ function username() {
         document.getElementById('msg').innerHTML = username;
 })
 }
-
     function userhistory() {
         var _html = ''
         $.post('http://192.168.10.123:9001/UserHistory' , function (data) {
@@ -33,11 +31,16 @@ function username() {
         // console.log(json_data.data);
         for(var i=json_data.data.length-1;i>=0;i--){
             // console.log(i,json_data.data)
-            _html += '<tr><a href="#" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'</tr>'
+            _html += '<tr><a href="#" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button onclick="deletecase('+i+')">删除</button></tr>'
         }
         $("#historys").html(_html)
     })}
-
+    function deletecase(r) {
+    req = {caseId:json_data.data[r].id};
+        $.post('http://192.168.10.123:9001/deletecase' , req,function (data) {
+            userhistory()
+        })
+    }
     function getBody(intstt) {
         $('#table').html('<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>'+'<th><button id="add" onclick="add()">添加参数</button></th>')
@@ -52,9 +55,7 @@ function username() {
         var n = 0;
         for(var i in json_data.data[intstt].body)
         {
-            // console.log('~~~~~~~~~~~~~',i);
             document.getElementsByClassName('key')[s].value += i;
-            // console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
             document.getElementsByClassName('value')[s].value += json_data.data[intstt].body[i];
             s ++
             if (s == len.length){
@@ -64,7 +65,6 @@ function username() {
         }
         for(var s in json_data.data[intstt].header){
             document.getElementsByClassName('key-header')[n].value += i;
-            // console.log('@@@@@@@@@@@',json_data.data[intstt].body[i]);
             document.getElementsByClassName('value-header')[n].value += json_data.data[intstt].header[s];
             n ++
             if (n == len.length){
@@ -73,11 +73,9 @@ function username() {
             add();
         }
         r_body = json_data.data[intstt].response_body
-        // console.log(r_body)
         var response_bodys = formatJson(r_body)
         document.getElementById('response_text').innerHTML = '<pre style="word-break:break-all;display:inline-block;">'+response_bodys+'<pre/>';
     }
-
     function deleteRow(r) {
         var i = r.parentNode.parentNode.rowIndex;
         if(i>0) {
@@ -90,77 +88,81 @@ function username() {
             document.getElementById('table-header').deleteRow(i)
         }
     }
-
+        // #发送请求
     function reqJson() {
-        if(/^[\u4e00-\u9fa5]+$/.test(str)){
-            alert("请不要输入汉字")
-            }
         var url = $('#url').val();
         var CaseName = $('#CaseName').val();
-        if($('input[name="name1"]:checked').val() == 'post'){
+        if ($('input[name="name1"]:checked').val() == 'post') {
             var postdata = [];
             var postheader = [];
             var key = $('.key');
             var value = $('.value');
             var header_key = $('.key-header');
             var header_value = $('.value-header');
-            // console.log('-----1---1--1-1-1--1-1-1--1-1-1--1--1'+header_key+header_value);
-            if(typeof(key)=='object' && typeof(value)=='object'){
-                for(var i=0;i<key.length;i++){
-                    var mn =key[i].value +':'+value[i].value;
-                    postdata.push(mn);
+            if (typeof (key) == 'object' && typeof (value) == 'object') {
+                for (var i = 0; i < key.length; i++) {
+                    if (isNull(key[i].value)) {
+                        chkstrlen(key[i].value);
+                        var mn = key[i].value + ':' + value[i].value;
+                        postdata.push(mn);
+                    }
                 }
-                if(typeof(key)=='object' && typeof(value)=='object'){
-                    for(var s=0;s<header_key.length;s++){
-                        var mu =header_key[s].value +':'+header_value[s].value;
-                        postheader.push(mu);
-                        }
-                }
-                var req = {url:url,data:JSON.stringify(postdata),header:JSON.stringify(postheader),type:'post',CaseName:CaseName};
-                $.post('http://192.168.10.123:9001/reqJson', req , function (data){
-                    userhistory();
-                    var json_response = JSON.parse(data);
-                    var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
-                });
-            }else{
-                $.post('http://192.168.10.123:9001/reqJson', {url:url,key:key,value:value,type:'post',CaseName:CaseName}, function (data){
-                     userhistory();
-                   var json_response = JSON.parse(data);
-                    var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
-                })
             }
-        }else{
+            if (typeof (header_key) == 'object' && typeof (header_value) == 'object') {
+                for (var s = 0; s < header_key.length; s++) {
+                    console.log('-----------------------' + isNull(JSON.stringify(header_key[s].value)))
+                    if (isNull(header_key[s].value)) {
+                        chkstrlen(header_key[s].value);
+                        var mu = header_key[s].value + ':' + header_value[s].value;
+                        postheader.push(mu);
+                    }
+                }
+            }
+            var req = {
+                url: url,
+                data: JSON.stringify(postdata),
+                header: JSON.stringify(postheader),
+                type: 'post',
+                CaseName: CaseName
+            };
+            $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
+                userhistory();
+                var json_response = JSON.parse(data);
+                var str_rep = formatJson(json_response.data)
+                document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
+            });
+        } else {
             var postdata = [];
             var key = $('.key');
             var value = $('.value');
-            if(typeof(key)=='object' && typeof(value)=='object'){
-                for(var i=0;i<key.length;i++){
-                    var mn =key[i].value +':'+value[i].value;
+            if (typeof (key) == 'object' && typeof (value) == 'object') {
+                for (var i = 0; i < key.length; i++) {
+                    var mn = key[i].value + ':' + value[i].value;
                     postdata.push(mn);
                 }
-                // console.log(JSON.stringify(postdata))
-                var req = {url:url,data:postdata,type:'get',CaseName:CaseName};
-                $.post('http://192.168.10.123:9001/reqJson', req , function (data){
-                     userhistory();
+                var req = {url: url, data: postdata, type: 'get', CaseName: CaseName};
+                $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
+                    userhistory();
                     var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
+                    document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
                 });
-            }else{
-                $.post('http://192.168.10.123:9001/reqJson', {url:url,key:key,value:value,type:'get',CaseName:CaseName}, function (data){
-                     userhistory();
-                   var json_response = JSON.parse(data);
+            } else {
+                $.post('http://192.168.10.123:9001/reqJson', {
+                    url: url,
+                    key: key,
+                    value: value,
+                    type: 'get',
+                    CaseName: CaseName
+                }, function (data) {
+                    userhistory();
+                    var json_response = JSON.parse(data);
                     var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML='<pre>'+str_rep+'<pre/>';
+                    document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
                 })
             }
-
         }
     }
-
-
     function SaveTestCase(){
         var url = $('#url').val()
         var CaseName = $('#CaseName').val()
@@ -173,7 +175,6 @@ function username() {
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                // console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'post',CaseName:CaseName};
                 $.post('http://192.168.10.123:9001/SaveTestCase', req , function (data){
 
@@ -192,7 +193,6 @@ function username() {
                     var mn =key[i].value +':'+value[i].value;
                     postdata.push(mn);
                 }
-                // console.log(JSON.stringify(postdata))
                 var req = {url:url,data:postdata,type:'get'};
                 $.post('http://192.168.10.123:9001/SaveTestCase', req , function (data){
 
@@ -205,6 +205,24 @@ function username() {
 
         }
     }
+
+//   判断是否为空
+function isNull(strs) {
+    if(strs == '' || strs == null || strs == "" || strs == undefined || strs.length == 0){
+        return false
+    }else {
+        return true
+    }
+}
+//key不允许包含中文
+function chkstrlen(str) {
+    for (var i = 0; i < str.length; i++) {
+        if (str.charCodeAt(i) > 255) { //如果是汉字
+            alert('参数key不允许输入汉字')
+            return
+        }
+    }
+}
 //JSON格式化
 var formatJson = function (json, options) {
          var reg = null,
