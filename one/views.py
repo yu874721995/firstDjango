@@ -85,7 +85,6 @@ def deletecase(request):
         return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
     case_id = request.POST.get('caseId',None)
     print('request_body:',request.POST)
-    print(case_id)
     models.user_body.objects.filter(host_id_id=case_id).update(status=0)
     models.user_host.objects.filter(id=case_id).update(status=0)
     return HttpResponse(json.dumps({'status':1,'msg':'操作成功'}))
@@ -154,11 +153,11 @@ def reqJson(request):
     data = {}
     body = json.loads(body[0])
     for i in body:
-        data[i.split(':')[0]] = i.split(':')[1]
-        geturl += i.split(':')[0] + '=' + i.split(':')[1]
+        data[i.split('--')[0]] = i.split('--')[1]
+        geturl += i.split('--')[0] + '=' + i.split('--')[1]
     header = json.loads(header[0])
     for i in header:
-        headers[i.split(':')[0]] = i.split(':')[1]
+        headers[i.split('--')[0]] = i.split('--')[1]
     resopnse_body = ''
     # 发送请求
     print('发送请求的参数:','url:',posturl,'data：',data,'header:',headers)
@@ -187,11 +186,11 @@ def reqJson(request):
         host_id = host.values()[0]['id']
         # 存入body
         for i in body:
-            dic = {'key':i.split(':')[0],'value':i.split(':')[1],'host_id_id':host_id,'type':1}
+            dic = {'key':i.split('--')[0],'value':i.split('--')[1],'host_id_id':host_id,'type':1}
             models.user_body.objects.create(**dic)
         #存入header
         for i in header:
-            dic = {'key': i.split(':')[0], 'value': i.split(':')[1], 'host_id_id': host_id, 'type': 2}
+            dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 2}
             models.user_body.objects.create(**dic)
     except Exception as e:
         return HttpResponse(json.dumps({'status': 1, 'msg':e,}))

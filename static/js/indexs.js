@@ -103,7 +103,7 @@ function username() {
                 for (var i = 0; i < key.length; i++) {
                     if (isNull(key[i].value)) {
                         chkstrlen(key[i].value);
-                        var mn = key[i].value + ':' + value[i].value;
+                        var mn = key[i].value + '--' + value[i].value;
                         postdata.push(mn);
                     }
                 }
@@ -113,7 +113,7 @@ function username() {
                     console.log('-----------------------' + isNull(JSON.stringify(header_key[s].value)))
                     if (isNull(header_key[s].value)) {
                         chkstrlen(header_key[s].value);
-                        var mu = header_key[s].value + ':' + header_value[s].value;
+                        var mu = header_key[s].value + '--' + header_value[s].value;
                         postheader.push(mu);
                     }
                 }
@@ -126,8 +126,11 @@ function username() {
                 CaseName: CaseName
             };
             $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
-                userhistory();
                 var json_response = JSON.parse(data);
+                if(json_response.msg=='登录超时'){
+                    alert('登录过期，请重新登录')
+                }
+                userhistory();
                 var str_rep = formatJson(json_response.data)
                 document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
             });
@@ -137,7 +140,7 @@ function username() {
             var value = $('.value');
             if (typeof (key) == 'object' && typeof (value) == 'object') {
                 for (var i = 0; i < key.length; i++) {
-                    var mn = key[i].value + ':' + value[i].value;
+                    var mn = key[i].value + '--' + value[i].value;
                     postdata.push(mn);
                 }
                 var req = {url: url, data: postdata, type: 'get', CaseName: CaseName};
@@ -172,7 +175,7 @@ function username() {
             var value = $('.value');
             if(typeof(key)=='object' && typeof(value)=='object'){
                 for(var i=0;i<key.length;i++){
-                    var mn =key[i].value +':'+value[i].value;
+                    var mn =key[i].value +'--'+value[i].value;
                     postdata.push(mn);
                 }
                 var req = {url:url,data:postdata,type:'post',CaseName:CaseName};
@@ -190,7 +193,7 @@ function username() {
             var value = $('.value');
             if(typeof(key)=='object' && typeof(value)=='object'){
                 for(var i=0;i<key.length;i++){
-                    var mn =key[i].value +':'+value[i].value;
+                    var mn =key[i].value +'--'+value[i].value;
                     postdata.push(mn);
                 }
                 var req = {url:url,data:postdata,type:'get'};
