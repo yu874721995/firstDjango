@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', #------------------配置跨域请求中间件
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
+    'Public.middleware.RequestBlockingMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
