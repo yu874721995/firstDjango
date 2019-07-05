@@ -112,6 +112,11 @@ TEMPLATES = [
     },
 ]
 
+STATICFILES_DIRS = [
+os.path.join(BASE_DIR, "static"),
+'/twostr/static/',
+]
+
 WSGI_APPLICATION = 'twostr.wsgi.application'
 
 
