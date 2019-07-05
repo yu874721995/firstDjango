@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'rkbxtj38r4*p-!%2$$=a&x&=7)38#z4on_&^(5ee^_m=*27&-1'
-
+DEFAULT_CHARSET = 'utf-8'
+LANGUAGE_CODE='zh-CN'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -98,7 +99,7 @@ ROOT_URLCONF = 'twostr.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'template')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

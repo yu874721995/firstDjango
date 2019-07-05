@@ -58,7 +58,8 @@ def Loginup(request):
 def register(request):
     username = request.POST.get('userName',None)
     password = request.POST.get('password',None)
-    query = models.UserInfo.objects.filter(user=username)
+    print(username)
+    query = models.UserInfo.objects.filter(user=str(username))
     print ('-------------------------已存在{}个用户'.format(list(query).__len__()))
     if query.__len__() >= 1:
         return HttpResponse(json.dumps({'status':2,
@@ -205,6 +206,36 @@ def findToken(user_id):
                 return token
         except:
             return False
+
+
+def num(request):
+    body = request.POST.getlist('data', None)
+    data = {}
+    body = json.loads(body[0])
+    for i in body:
+        data[i.split('--')[0]] = i.split('--')[1]
+    datas = list(data.values())
+    lists = []
+    for i in datas:
+        i = list(i)
+        lists.append(i)
+    h = lists_combination(lists)
+    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': h}))
+
+
+
+def lists_combination(lists, code=''):
+    '''输入多个列表组成的列表, 输出其中每个列表所有元素可能的所有排列组合
+    code用于分隔每个元素'''
+    try:
+        import reduce
+    except:
+        from functools import reduce
+
+    def myfunc(list1, list2):
+        return [str(i) + code + str(j) for i in list1 for j in list2]
+
+    return reduce(myfunc, lists)
 
 
 
