@@ -7,6 +7,7 @@ from one import models
 import requests
 from Public.JsonData import DateEncoder
 from django.contrib.auth.decorators import login_required
+import datetime
 
 user_list = []
 
@@ -25,12 +26,12 @@ def goRegister(request):
 
 def Loginup(request):
     ip = request.META['REMOTE_ADDR']
-    print (1,request,2,request.method,3,request.body,4,request.path_info,5,request.is_ajax(),6,ip)
+    print ('request_query:',1,request,2,request.method,3,request.body,4,request.path_info,5,request.is_ajax(),6,ip)
     if request.method != 'POST':
         return HttpResponse(json.dumps({'status':100, 'msg': '请求方式错误'}))
     username = request.POST.get('userName', None)
     password = request.POST.get('password', None)
-    print (username,password,type(username),type(password))
+    print ('search_query:',username,password,type(username),type(password))
     query = models.UserInfo.objects.filter(username=username).values()
     try:
         if query.__len__() > 0:
@@ -40,36 +41,31 @@ def Loginup(request):
                 request.session['user_id'] = userid
                 request.session['is_login'] = True
                 request.session.set_expiry(30 * 60)
+                models.UserInfo.objects.filter(username=username).update(old_login_time=datetime.datetime.today())
                 response = json.dumps({'status':1,'msg':'登录成功','data':username})
                 return HttpResponse(response)
             elif query[0]['password'] != password:
-                print ('--------------')
                 return HttpResponse(json.dumps({'status':2, 'msg': '密码错误'}))
         elif query.__len__() == 0:
             return HttpResponse(json.dumps({'status':3, 'msg': '用户未注册'}))
         else:
-            print ('--------')
-            return render(request,'login.html')
+            return HttpResponse(json.dumps({'status':500, 'msg':'error'}))
     except BaseException as e:
-        print(e)
-        return render(request,'login.html', {},)
+        e = str(e)
+        return HttpResponse(json.dumps({'status':500, 'msg': e}))
 
 
 def register(request):
     username = request.POST.get('userName',None)
     password = request.POST.get('password',None)
-    print(username)
     query = models.UserInfo.objects.filter(user=str(username))
-    print ('-------------------------已存在{}个用户'.format(list(query).__len__()))
     if query.__len__() >= 1:
         return HttpResponse(json.dumps({'status':2,
                                         'msg':'用户已注册'}))
     elif query.__len__() == 0:
         try:
-            print (username,password)
             models.UserInfo.objects.create(user=username, password=password)
             session_username = models.UserInfo.objects.filter(user=username).values()
-            print ('注册成功:注册账号------',session_username[0]['user'])
             request.session['user_id'] = session_username[0]['id']
             request.session['username'] = session_username[0]['user']
             request.session['is_login'] = True
@@ -85,7 +81,6 @@ def deletecase(request):
     if user_id is None or user_id == '1':
         return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
     case_id = request.POST.get('caseId',None)
-    print('request_body:',request.POST)
     models.user_body.objects.filter(host_id_id=case_id).update(status=0)
     models.user_host.objects.filter(id=case_id).update(status=0)
     return HttpResponse(json.dumps({'status':1,'msg':'操作成功'}))
@@ -93,8 +88,9 @@ def deletecase(request):
 
 def session_test(request):
     username = request.session.get('username',None)#取这个key的值，如果不存在就为None
-    userid = request.session.get('userid',None)
-    return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':{'username':username,'userid':userid}}))
+    userid = request.session.get('user_id',None)
+    times = time.strftime('%y-%m-%d-%H-%M-%S',time.localtime(time.time()))
+    return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':{'username':username,'userid':userid,'time':times}}))
 
 def getuser(request):
     username = request.session.get('username',None)
@@ -165,7 +161,6 @@ def reqJson(request):
     if types == 'post':
         try:
             r = requests.post(posturl, data=data,headers=headers)
-            print(r)
             resopnse_body = r.json()
         except Exception as e:
             print('error--------------',e)
@@ -176,11 +171,9 @@ def reqJson(request):
             resopnse_body = r.json()
         except Exception as e:
             return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    print (resopnse_body)
     # 存入历史
     try:
         dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'method':types,'casename':CaseName}
-        print ('------------------------------------',resopnse_body)
         models.user_host.objects.create(**dic)
 
         host = models.user_host.objects.filter(host=posturl).order_by('-create_date')
@@ -206,6 +199,23 @@ def findToken(user_id):
                 return token
         except:
             return False
+
+def userList(request):
+    from django.forms.models import model_to_dict
+    query = []
+    query_list = models.UserInfo.objects.all()
+    for i in query_list:
+        a = {}
+        querys = model_to_dict(i)
+        a['id'] = querys['id']
+        a['status'] = querys['status']
+        a['username'] = querys['username']
+        a['sex'] = querys['sex']
+        a['old_login_time'] = querys['old_login_time'].strftime('%Y-%m-%d %H:%M:%S')
+        query.append(a)
+    print('查询出的所有用户:',query)
+    return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':query}))
+
 
 
 def num(request):

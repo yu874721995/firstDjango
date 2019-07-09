@@ -30,11 +30,12 @@ urlpatterns = [
     re_path('goRegister',indexviews.goRegister),
     re_path('register',indexviews.register),
     re_path('reqJson',indexviews.reqJson),
-    re_path('user',indexviews.getuser),
+    re_path('username',indexviews.getuser),
     re_path('UserHistory', indexviews.userHistory),
     re_path(r'^accounts/login/$',indexviews.login),
     re_path('SaveTestCase',SaveCase().saveTestCase),
     re_path('deletecase',indexviews.deletecase),
+    re_path('userList',indexviews.userList),
 ]
 
 

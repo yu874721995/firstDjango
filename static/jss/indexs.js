@@ -18,10 +18,10 @@ function one(){$.post('http://192.168.10.123:9001/session_test',function (data) 
         userhistory(),username();
 })()
 function username() {
-        $.post('http://192.168.10.123:9001/user' , function (data) {
+        $.post('http://192.168.10.123:9001/username' , function (data) {
         var json_data = JSON.parse(data);
         var username = json_data.data.username;
-        document.getElementById('msg').innerHTML = username;
+        $('#customerName').text(username);
 })
 }
     function userhistory() {
@@ -226,6 +226,10 @@ function chkstrlen(str) {
         }
     }
 }
+
+
+
+
 //JSON格式化
 var formatJson = function (json, options) {
          var reg = null,

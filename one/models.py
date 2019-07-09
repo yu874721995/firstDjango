@@ -7,6 +7,8 @@ class UserInfo(models.Model):
     status = models.CharField(max_length=20, default=1)
     username = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
+    sex = models.CharField(max_length=20, default=1)
+    old_login_time = models.DateTimeField(default=timezone.now)
 # Create your models here.
 class user_host(models.Model):
     id = models.AutoField(primary_key=True,blank=False)
