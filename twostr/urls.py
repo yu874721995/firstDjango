@@ -13,29 +13,32 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.conf.urls import re_path
-from django.urls import path
 from one import views as indexviews
-from one.user_CreateTestCase import user_testCase as SaveCase
+from one.api.user_CreateTestCase import user_testCase as SaveCase
+from one.api.updateUser import update_Users as user
+from one.api.userList import user_list as users
+from one.api.req_Debug import req_debug as req
+from one.api.login import Login as login
 
 
 urlpatterns = [
     #re_path('',oneviews.login),
     re_path(r'^$',indexviews.login),
-    re_path('session_test',indexviews.session_test),
+    re_path('session_test',users().session_test),
     re_path('index',indexviews.index),
     re_path('login',indexviews.login),
-    re_path('Loginup',indexviews.Loginup),
+    re_path('Loginup',login().Loginup),
     re_path('goRegister',indexviews.goRegister),
     re_path('register',indexviews.register),
-    re_path('reqJson',indexviews.reqJson),
-    re_path('username',indexviews.getuser),
-    re_path('UserHistory', indexviews.userHistory),
+    re_path('reqJson',req().reqJson),
+    re_path('username',users().getuser),
+    re_path('UserHistory', users().userHistory),
     re_path(r'^accounts/login/$',indexviews.login),
     re_path('SaveTestCase',SaveCase().saveTestCase),
     re_path('deletecase',indexviews.deletecase),
-    re_path('userList',indexviews.userList),
+    re_path('userList',users().userList),
+    re_path('updateUserStatus',user().updateUserStatus),
 ]
 
 

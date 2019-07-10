@@ -5,7 +5,7 @@ import pymysql as mysql
 import json,time
 from one import models
 import requests
-from Public.JsonData import DateEncoder
+
 from django.contrib.auth.decorators import login_required
 import datetime
 
@@ -24,35 +24,7 @@ def index(request):
 def goRegister(request):
     return render(request,'register.html')
 
-def Loginup(request):
-    ip = request.META['REMOTE_ADDR']
-    print ('request_query:',1,request,2,request.method,3,request.body,4,request.path_info,5,request.is_ajax(),6,ip)
-    if request.method != 'POST':
-        return HttpResponse(json.dumps({'status':100, 'msg': '请求方式错误'}))
-    username = request.POST.get('userName', None)
-    password = request.POST.get('password', None)
-    print ('search_query:',username,password,type(username),type(password))
-    query = models.UserInfo.objects.filter(username=username).values()
-    try:
-        if query.__len__() > 0:
-            if query[0]['password'] == password:
-                userid = query[0]['id']
-                request.session['username'] = username
-                request.session['user_id'] = userid
-                request.session['is_login'] = True
-                request.session.set_expiry(30 * 60)
-                models.UserInfo.objects.filter(username=username).update(old_login_time=datetime.datetime.today())
-                response = json.dumps({'status':1,'msg':'登录成功','data':username})
-                return HttpResponse(response)
-            elif query[0]['password'] != password:
-                return HttpResponse(json.dumps({'status':2, 'msg': '密码错误'}))
-        elif query.__len__() == 0:
-            return HttpResponse(json.dumps({'status':3, 'msg': '用户未注册'}))
-        else:
-            return HttpResponse(json.dumps({'status':500, 'msg':'error'}))
-    except BaseException as e:
-        e = str(e)
-        return HttpResponse(json.dumps({'status':500, 'msg': e}))
+
 
 
 def register(request):
@@ -84,168 +56,6 @@ def deletecase(request):
     models.user_body.objects.filter(host_id_id=case_id).update(status=0)
     models.user_host.objects.filter(id=case_id).update(status=0)
     return HttpResponse(json.dumps({'status':1,'msg':'操作成功'}))
-
-
-def session_test(request):
-    username = request.session.get('username',None)#取这个key的值，如果不存在就为None
-    userid = request.session.get('user_id',None)
-    times = time.strftime('%y-%m-%d-%H-%M-%S',time.localtime(time.time()))
-    return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':{'username':username,'userid':userid,'time':times}}))
-
-def getuser(request):
-    username = request.session.get('username',None)
-    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data':{'username':username}}))
-
-
-def userHistory(request):
-    username = request.session.get('username',1)
-    if username == 1:
-        return HttpResponse(json.dumps({'status': 1, 'msg': '登录过期'}))
-    user_id = models.UserInfo.objects.get(username=username).id
-    user_host_history = models.user_host.objects.filter(userid=user_id,status=1).values()
-    user_history = []
-    for i in user_host_history:
-        everyhost = {}
-        body = {}
-        header = {}
-        host_id = i['id']
-        body_init = models.user_body.objects.filter(host_id_id=host_id,type=1,status=1).values()
-        header_init = models.user_body.objects.filter(host_id_id=host_id,type=2,status=1).values()
-        for everybody in body_init:
-            body[everybody['key']] = everybody['value']
-        for everheader in header_init:
-            header[everheader['key']] = everheader['value']
-        everyhost['id'] = i['id']
-        everyhost['host'] = i['host']
-        everyhost['body'] = body
-        everyhost['header'] = header
-        everyhost['create_date'] = i['create_date']
-        everyhost['response_body'] = i['response_body']
-        everyhost['type'] = i['method']
-        everyhost['CaseName'] = i['casename']
-        user_history.append(everyhost)
-    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data':user_history},cls=DateEncoder))
-
-#处理请求
-def reqJson(request):
-    print('request_body',request.POST)
-    posturl = request.POST.get('url',None)
-    geturl = posturl + '?'
-    body = request.POST.getlist('data',None)
-    header = request.POST.getlist('header',None)
-    token = request.POST.get('token',None)
-    CaseName = request.POST.get('CaseName',None)
-    headers = {}
-    user_id = request.session.get('user_id', None)
-    if user_id is None or user_id == '1':
-        return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
-    if not token is None:
-        login_token = findToken(user_id)
-        if  not login_token:
-            return HttpResponse(json.dumps({'status': 5, 'msg': '没有找到token或token已失效'}))
-        headers['Authorization'] = login_token
-    else:
-        pass
-    types = request.POST.get('type',None)
-    data = {}
-    body = json.loads(body[0])
-    for i in body:
-        data[i.split('--')[0]] = i.split('--')[1]
-        geturl += i.split('--')[0] + '=' + i.split('--')[1]
-    header = json.loads(header[0])
-    for i in header:
-        headers[i.split('--')[0]] = i.split('--')[1]
-    resopnse_body = ''
-    # 发送请求
-    print('发送请求的参数:','url:',posturl,'data：',data,'header:',headers)
-    if types == 'post':
-        try:
-            r = requests.post(posturl, data=data,headers=headers)
-            resopnse_body = r.json()
-        except Exception as e:
-            print('error--------------',e)
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    elif types == 'get':
-        try:
-            r = requests.get(geturl)
-            resopnse_body = r.json()
-        except Exception as e:
-            return HttpResponse(json.dumps({'status': 2, 'msg': '请求错误'}))
-    # 存入历史
-    try:
-        dic = {'host': posturl, 'userid': user_id, 'response_body': resopnse_body,'method':types,'casename':CaseName}
-        models.user_host.objects.create(**dic)
-
-        host = models.user_host.objects.filter(host=posturl).order_by('-create_date')
-        host_id = host.values()[0]['id']
-        # 存入body
-        for i in body:
-            dic = {'key':i.split('--')[0],'value':i.split('--')[1],'host_id_id':host_id,'type':1}
-            models.user_body.objects.create(**dic)
-        #存入header
-        for i in header:
-            dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 2}
-            models.user_body.objects.create(**dic)
-    except Exception as e:
-        return HttpResponse(json.dumps({'status': 1, 'msg':e,}))
-    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': resopnse_body}))
-
-def findToken(user_id):
-    token_body = models.user_host.objects.filter(user_id=user_id).order_by('-create_date')
-    for i in token_body:
-        try:
-            if i[3]['token']:
-                token = 'Bearer '+i[3]['token']
-                return token
-        except:
-            return False
-
-def userList(request):
-    from django.forms.models import model_to_dict
-    query = []
-    query_list = models.UserInfo.objects.all()
-    for i in query_list:
-        a = {}
-        querys = model_to_dict(i)
-        a['id'] = querys['id']
-        a['status'] = querys['status']
-        a['username'] = querys['username']
-        a['sex'] = querys['sex']
-        a['old_login_time'] = querys['old_login_time'].strftime('%Y-%m-%d %H:%M:%S')
-        query.append(a)
-    print('查询出的所有用户:',query)
-    return HttpResponse(json.dumps({'status':1,'msg':'操作成功','data':query}))
-
-
-
-def num(request):
-    body = request.POST.getlist('data', None)
-    data = {}
-    body = json.loads(body[0])
-    for i in body:
-        data[i.split('--')[0]] = i.split('--')[1]
-    datas = list(data.values())
-    lists = []
-    for i in datas:
-        i = list(i)
-        lists.append(i)
-    h = lists_combination(lists)
-    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': h}))
-
-
-
-def lists_combination(lists, code=''):
-    '''输入多个列表组成的列表, 输出其中每个列表所有元素可能的所有排列组合
-    code用于分隔每个元素'''
-    try:
-        import reduce
-    except:
-        from functools import reduce
-
-    def myfunc(list1, list2):
-        return [str(i) + code + str(j) for i in list1 for j in list2]
-
-    return reduce(myfunc, lists)
 
 
 

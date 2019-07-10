@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+@Time    : 2019/7/10 20:47
+@Author  : Careslten
+@Site    : 
+@File    : userList.py
+@Software: PyCharm
+'''
+
+
+from django.http import HttpResponse
+from one import models
+import json,time
+from Public.JsonData import DateEncoder
+
+class user_list():
+
+    def userList(self,request):
+        from django.forms.models import model_to_dict
+        query = []
+        query_list = models.UserInfo.objects.all()
+        for i in query_list:
+            a = {}
+            querys = model_to_dict(i)
+            a['id'] = querys['id']
+            a['status'] = querys['status']
+            a['username'] = querys['username']
+            a['sex'] = querys['sex']
+            a['old_login_time'] = querys['old_login_time'].strftime('%Y-%m-%d %H:%M:%S')
+            query.append(a)
+        print('查询出的所有用户:', query)
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': query}))
+
+    def session_test(self,request):
+        username = request.session.get('username', None)  # 取这个key的值，如果不存在就为None
+        userid = request.session.get('user_id', None)
+        times = time.strftime('%y-%m-%d-%H-%M-%S', time.localtime(time.time()))
+        return HttpResponse(
+            json.dumps({'status': 1, 'msg': '操作成功', 'data': {'username': username, 'userid': userid, 'time': times}}))
+
+    def getuser(self,request):
+        username = request.session.get('username', None)
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': {'username': username}}))
+
+    def userHistory(self,request):
+        username = request.session.get('username', 1)
+        if username == 1:
+            return HttpResponse(json.dumps({'status': 1, 'msg': '登录过期'}))
+        user_id = models.UserInfo.objects.get(username=username).id
+        user_host_history = models.user_host.objects.filter(userid=user_id, status=1).values()
+        user_history = []
+        for i in user_host_history:
+            everyhost = {}
+            body = {}
+            header = {}
+            host_id = i['id']
+            body_init = models.user_body.objects.filter(host_id_id=host_id, type=1, status=1).values()
+            header_init = models.user_body.objects.filter(host_id_id=host_id, type=2, status=1).values()
+            for everybody in body_init:
+                body[everybody['key']] = everybody['value']
+            for everheader in header_init:
+                header[everheader['key']] = everheader['value']
+            everyhost['id'] = i['id']
+            everyhost['host'] = i['host']
+            everyhost['body'] = body
+            everyhost['header'] = header
+            everyhost['create_date'] = i['create_date']
+            everyhost['response_body'] = i['response_body']
+            everyhost['type'] = i['method']
+            everyhost['CaseName'] = i['casename']
+            user_history.append(everyhost)
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': user_history}, cls=DateEncoder))
