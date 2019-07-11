@@ -21,18 +21,20 @@
         <div class="layui-fluid">
             <div class="layui-row">
                 <form class="layui-form">
-                    <div class="layui-form-item">
-                        <label for="L_email" class="layui-form-label">
-                            <span class="x-red">*</span>邮箱</label>
-                        <div class="layui-input-inline">
-                            <input type="text" id="L_email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>
-                        <div class="layui-form-mid layui-word-aux">
-                            <span class="x-red">*</span>将会成为您唯一的登入名</div></div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label for="L_email" class="layui-form-label">-->
+<!--                            <span class="x-red">*</span>邮箱</label>-->
+<!--                        <div class="layui-input-inline">-->
+<!--                            <input type="text" id="L_email" name="email" required="" lay-verify="email" autocomplete="off" class="layui-input"></div>-->
+<!--                        <div class="layui-form-mid layui-word-aux">-->
+<!--                            <span class="x-red">*</span>将会成为您唯一的登入名</div></div>-->
                     <div class="layui-form-item">
                         <label for="L_username" class="layui-form-label">
                             <span class="x-red">*</span>昵称</label>
                         <div class="layui-input-inline">
                             <input type="text" id="L_username" name="username" required="" lay-verify="nikename" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-form-mid layui-word-aux">
+                            <span class="x-red">*</span>将会成为您唯一的登入名</div>
                     </div>
                     <div class="layui-form-item">
                         <label for="L_pass" class="layui-form-label">
@@ -57,6 +59,7 @@
                 $ = layui.jquery;
                 var form = layui.form,
                 layer = layui.layer;
+                var username,password,json_status,json_msg;
 
                 //自定义验证规则
                 form.verify({
@@ -77,17 +80,29 @@
                 form.on('submit(add)',
                 function(data) {
                     console.log(data);
-                    //发异步，把数据提交给php
-                    layer.alert("增加成功", {
+                    //发异步，把数据提交
+                    var username = $('#L_username').val();
+                    var password = $('#L_pass').val();
+                    $.post('http://192.168.10.123:9001/addUser',{username:username,password:password},function(data){
+                        json_status = JSON.parse(data).status
+                        json_msg = JSON.parse(data).msg
+                        if(json_status == 1){
+                            layer.alert("增加成功", {
                         icon: 6
                     },
                     function() {
                         //关闭当前frame
                         xadmin.close();
 
-                        // 可以对父窗口进行刷新 
+                        // 可以对父窗口进行刷新
                         xadmin.father_reload();
                     });
+                        }else {
+                            layer.msg(json_msg)
+                        }
+                        }
+                    )
+
                     return false;
                 });
 

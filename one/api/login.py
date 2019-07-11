@@ -24,7 +24,7 @@ class Login():
         username = request.POST.get('userName', None)
         password = request.POST.get('password', None)
         print ('search_query:',username,password,type(username),type(password))
-        query = models.UserInfo.objects.filter(username=username).values()
+        query = models.UserInfo.objects.filter(username=username,status=1,useing=1).values()
         try:
             if query.__len__() > 0:
                 if query[0]['password'] == password:

@@ -39,6 +39,10 @@ urlpatterns = [
     re_path('deletecase',indexviews.deletecase),
     re_path('userList',users().userList),
     re_path('updateUserStatus',user().updateUserStatus),
+    re_path('addUser',users().add_User),
+    re_path('user_delete',user().user_delete),
+    re_path('userDelList',users().userDelList),
+    re_path('recoverCustomer',users().recoverCustomer),
 ]
 
 

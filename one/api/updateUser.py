@@ -30,3 +30,14 @@ class update_Users():
             print(2222222)
             return HttpResponse(json.dumps({'status': 500, 'msg': '参数错误'}))
         return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功'}))
+
+    def user_delete(self,request):
+        user_id = request.POST.get('user_id',None)
+        if user_id == None:
+            return HttpResponse(json.dumps({'status': 500, 'msg': '参数错误'}))
+        try:
+            models.UserInfo.objects.filter(id=user_id).update(useing=0)
+        except Exception as e:
+            return HttpResponse(json.dumps({'status': 500, 'msg': e}))
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功'}))
+

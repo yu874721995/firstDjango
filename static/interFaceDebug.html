@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script src="/static/jss/zepto.js"></script>
+    <script src="/static/jss/indexs.js"></script>
+    <style>
+        .history{
+            display: inline-block;
+            width:20%;
+            height:0;
+            background-color: white;
+            padding-top:45%;
+            border:2px solid #92B8B1;
+            position:absolute;
+        }
+        .top{
+            height: 0;
+            width: 100%;
+            display: inline-block;
+            background-color: #dddddd;
+            position:absolute;
+            padding-top: 30%;
+            top:0;
+            right:0;
+            border:1px solid #9F9F9F;
+        }
+        .find{
+            height: 0;
+            width: 100%;
+            display: inline-block;
+            background-color: #dddddd;
+            position:absolute;
+            padding-top: 15%;
+            top:0;
+            right:0;
+            border:1px solid #92B8B1;
+        }
+        .find-input{
+            padding-top: 5%;
+            width: 80%;
+            height: 100%;
+            top:0;
+            right:0;
+            display: inline-block;
+            position:absolute;
+
+        }
+        .find-button{
+            width: 20%;
+            height: 100%;
+            top:0;
+            left:0;
+            position:absolute;
+        }
+        .history-text{
+            position: absolute;
+            bottom:0;
+            text-align:center;
+            width: 100%;
+            height: 40%;
+            display: inline-block;
+            background-color: #dddddd;
+            padding:0;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body style="margin:0;padding:0;">
+  <div class="x-nav">
+              <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+                  <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+              </a>
+  </div>
+  <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12 history">
+                    <div class="top">
+                        <div class="find">
+                            <button class="find-button" type="button"><i class="layui-icon layui-icon-search "></i></button>
+                            <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入host查询" >
+                        </div>
+                        <div class="history-text">history</div>
+
+                    </div>
+                </div>
+                <div class="go">
+                                <div class="interface_style">请求网址:
+                                    <input id='url' type="text" value="" style="width:350px;height: 30px">
+                                    <input type="radio" name="name1" checked value="get">get
+                                    <input type="radio" name="name1" value="post">post
+                                    <input type="button" value="请求" onclick="reqJson()" class="layui-btn">
+                                </div>
+                                <div>
+                                  接口名称：
+                                    <input id='CaseName' type="text" value="" style="width:350px;height: 30px">
+                                </div>
+                                <div class="body_big">
+                                    <div class='body'>请求参数:</div>
+                                        <table id="table">
+                                            <tr>
+                                                <th>key:<input class='key' type="text" value=""></th>
+                                                <th>value:<input class='value' type="text" value=""></th>
+                                                <th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th>
+                                                <th><button id="add" onclick="add()" class="layui-btn">添加参数</button></th>
+                                            </tr>
+                                        </table>
+                                </div>
+                                <div class="header_big">
+                                <div class='header'>请求头部:</div>
+                                <table id="table-header">
+                                    <tr>
+                                        <th>key:<input class='key-header' type="text" value=""></th>
+                                        <th>value:<input class='value-header' type="text" value=""></th>
+                                        <th><button class="deletes" id="clear" onclick="deleteRow2(this)">--</button></th>
+                                        <th><button id="add" onclick="add_header()" class="layui-btn">添加参数</button></th>
+                                    </tr>
+                                </table>
+                                </div>
+                                <div><input type="button" value="保存用例" onclick="SaveTestCase()"></div>
+                                <div>文本格式参数</div>
+                                <div id="request-body">
+                                    <textarea id="request-bodys" cols="50" rows="10"></textarea>
+                                </div>
+                                <div id="response">
+                                    <span>返回参数：</span>
+                                </div>
+                    <div id="response_text">
+
+                    </div>
+                </div>
+            </div>
+  </div>
+</body>
+</html>

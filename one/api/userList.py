@@ -18,17 +18,16 @@ from Public.JsonData import DateEncoder
 class user_list():
 
     def userList(self,request):
-        from django.forms.models import model_to_dict
         query = []
-        query_list = models.UserInfo.objects.all()
+        query_list = models.UserInfo.objects.filter(useing=1).values()
+        print('aaaaaaaaaa',query_list)
         for i in query_list:
             a = {}
-            querys = model_to_dict(i)
-            a['id'] = querys['id']
-            a['status'] = querys['status']
-            a['username'] = querys['username']
-            a['sex'] = querys['sex']
-            a['old_login_time'] = querys['old_login_time'].strftime('%Y-%m-%d %H:%M:%S')
+            a['id'] = i['id']
+            a['status'] = i['status']
+            a['username'] = i['username']
+            a['sex'] = i['sex']
+            a['old_login_time'] = i['old_login_time'].strftime('%Y-%m-%d %H:%M:%S')
             query.append(a)
         print('查询出的所有用户:', query)
         return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': query}))
@@ -72,3 +71,47 @@ class user_list():
             everyhost['CaseName'] = i['casename']
             user_history.append(everyhost)
         return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': user_history}, cls=DateEncoder))
+
+    def add_User(self,request):
+        username = request.POST.get('username',None)
+        password = request.POST.get('password',None)
+        if username  == None or password == None:
+            return HttpResponse(json.dumps({'status': 500, 'msg': '参数错误'}))
+        query = models.UserInfo.objects.filter(username=str(username))
+        if query.__len__() >= 1:
+            return HttpResponse(json.dumps({'status': 500,'msg': '用户已存在'}))
+        try:
+            dic = {'username':username, 'password':password}
+            models.UserInfo.objects.create(**dic)
+            return HttpResponse(json.dumps({'status': 1, 'msg':'操作成功'}))
+        except Exception as e:
+            return HttpResponse(json.dumps({'status': 500, 'msg':e}))
+
+    def userDelList(self, request):
+        query = []
+        try:
+            query_list = models.UserInfo.objects.filter(useing=0).values()
+            print('ddddddddd', query_list)
+            for i in query_list:
+                a = {}
+                a['id'] = i['id']
+                a['status'] = i['status']
+                a['username'] = i['username']
+                a['sex'] = i['sex']
+                a['create_time'] = i['create_time'].strftime('%Y-%m-%d %H:%M:%S')
+                query.append(a)
+            print('查询出的所有已删除用户:', query)
+        except Exception as e:
+            print(e)
+            return HttpResponse(json.dumps({'status': 1, 'msg':e}))
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': query}))
+
+    def recoverCustomer(self,request):
+        user_id = request.POST.get('user_id',None)
+        if user_id == None:
+            return HttpResponse(json.dumps({'status': 500, 'msg': '参数错误'}))
+        try:
+            models.UserInfo.objects.filter(id=user_id).update(useing=1)
+        except Exception as e:
+            return HttpResponse(json.dumps({'status': 500, 'msg': e}))
+        return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功'}))
