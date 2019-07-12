@@ -22,6 +22,7 @@
             padding-top:45%;
             border:2px solid #92B8B1;
             position:absolute;
+            /*box-shadow:1px 1px #92B8B1 inset ;*/
         }
         .top{
             height: 0;
@@ -73,6 +74,62 @@
             padding:0;
             font-size: 20px;
         }
+        .go {
+            display: inline-block;
+            height: 100%;
+            width: 70%;
+            vertical-align: top;
+        }
+        .request{
+            background-color: #FFFFFF;
+            padding-left: 20px;
+            display: inline-block;
+            right: 20px;
+            height: 0;
+            width: 75%;
+            position: absolute;
+            padding-top:45%;
+        }
+        .requesr-input{
+            border: 2px solid #dddddd;
+            position: absolute;
+            top: 2%;
+            right: 3%;
+            width: 95%;
+        }
+        .method{
+            width: 8%;
+        }
+        .request-input{
+            position: absolute;
+            width: 82%;
+            top: 0;
+            right: 10%;
+        }
+        .request-button{
+            width: 10%;
+             position: absolute;
+            top: 0;
+            right: 0;
+        }
+        .query{
+            width: 99%;
+             position: absolute;
+            top: 10%;
+            right: 0;
+
+        }
+        .body-format{
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            right: 0;
+        }
+        li{
+            position: absolute;
+            height: 100%;
+            display: table-cell;
+        }
     </style>
 </head>
 <body style="margin:0;padding:0;">
@@ -90,55 +147,76 @@
                             <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入host查询" >
                         </div>
                         <div class="history-text">history</div>
-
                     </div>
                 </div>
-                <div class="go">
-                                <div class="interface_style">请求网址:
-                                    <input id='url' type="text" value="" style="width:350px;height: 30px">
-                                    <input type="radio" name="name1" checked value="get">get
-                                    <input type="radio" name="name1" value="post">post
-                                    <input type="button" value="请求" onclick="reqJson()" class="layui-btn">
-                                </div>
-                                <div>
-                                  接口名称：
-                                    <input id='CaseName' type="text" value="" style="width:350px;height: 30px">
-                                </div>
-                                <div class="body_big">
-                                    <div class='body'>请求参数:</div>
-                                        <table id="table">
-                                            <tr>
-                                                <th>key:<input class='key' type="text" value=""></th>
-                                                <th>value:<input class='value' type="text" value=""></th>
-                                                <th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th>
-                                                <th><button id="add" onclick="add()" class="layui-btn">添加参数</button></th>
-                                            </tr>
-                                        </table>
-                                </div>
-                                <div class="header_big">
-                                <div class='header'>请求头部:</div>
-                                <table id="table-header">
-                                    <tr>
-                                        <th>key:<input class='key-header' type="text" value=""></th>
-                                        <th>value:<input class='value-header' type="text" value=""></th>
-                                        <th><button class="deletes" id="clear" onclick="deleteRow2(this)">--</button></th>
-                                        <th><button id="add" onclick="add_header()" class="layui-btn">添加参数</button></th>
-                                    </tr>
-                                </table>
-                                </div>
-                                <div><input type="button" value="保存用例" onclick="SaveTestCase()"></div>
-                                <div>文本格式参数</div>
-                                <div id="request-body">
-                                    <textarea id="request-bodys" cols="50" rows="10"></textarea>
-                                </div>
-                                <div id="response">
-                                    <span>返回参数：</span>
-                                </div>
-                    <div id="response_text">
+                  <div class="request">
+                      <div class="requesr-input">
+                          <select name="method" lay-verify="" class="layui-input layui-unselect method layui-form-selected">
+                              <option value="1">GET</option>
+                              <option value="2">POST</option>
+                            </select>
+                          <input class="layui-input request-input" id="request" type="text" placeholder="请输入host" >
+                          <button class="layui-btn request-button" onclick=""><i class="layui-icon"></i>请求</button>
+                      </div>
+                      <div class="layui-tab layui-tab-card query">
+                          <ul class="layui-tab-title">
+                            <li class="layui-this">Headers</li>
+                            <li>body</li>
+                          </ul>
+                          <div class="layui-tab-content" style="height: 100px;">
+                            <div class="layui-tab-item layui-show">
 
-                    </div>
-                </div>
+
+
+                                <div class="layui-tab layui-tab-card body-format">
+                                  <ul class="layui-tab-title" style="position:absolute;height:20%">
+                                      <li class="layui-this">
+                                          <input type="radio" checked="" id="sex_male" value="1" name="sex"><label for="sex_male">application/json</label>
+                                      </li>
+                                      <li >
+                                          <input type="radio" id="sex_female" value="0" name="sex"><label for="sex_female">raw</label>
+                                      </li>
+                                  </ul>
+                                  <div class="layui-tab-content" style="height: 100px;">
+                                    <div class="layui-tab-item layui-show">
+
+                                    </div>
+                                    <div class="layui-tab-item">
+
+                                    </div>
+                                  </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+                            <div class="layui-tab-item"></div>
+                        </div>
+                  </div>
             </div>
-  </div>
+        </div>
+    </div>
 </body>
+            <script>
+            //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+            layui.use('element', function(){
+              var element = layui.element;
+
+            });
+            </script>
 </html>
