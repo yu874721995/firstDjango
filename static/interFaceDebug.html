@@ -130,6 +130,51 @@
             height: 100%;
             display: table-cell;
         }
+        .format-cash{
+            position: absolute;
+            background-color: #dddddd;
+            height: 25%;
+            top: 0;
+            width: 100%;
+        }
+        .parmes{
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            right: 0;
+        }
+        #table{
+            position: absolute;
+            width: 100%;
+            top: 5px;
+            right: 0;
+        }
+        .key,.value{
+            display: inline-block;
+            position: absolute;
+            width: 70%;
+
+        }
+        .body-font{
+            width: 30px;
+        }
+        .body-font-value{
+            width: 50px;
+        }
+        .values{
+            position:absolute;
+            width: 40%;
+        }
+        .add{
+            position: absolute;
+            right: 15%;
+            top:10px;
+        }
+        .delete{
+            position: absolute;
+            right: 20%;
+            top:10px;
+        }
     </style>
 </head>
 <body style="margin:0;padding:0;">
@@ -169,6 +214,7 @@
 
 
                                 <div class="layui-tab layui-tab-card body-format">
+                                    <div class="format-cash"style="position: absolute;height: 30%;">
                                   <ul class="layui-tab-title" style="position:absolute;height:20%">
                                       <li class="layui-this">
                                           <input type="radio" checked="" id="sex_male" value="1" name="sex"><label for="sex_male">application/json</label>
@@ -177,11 +223,21 @@
                                           <input type="radio" id="sex_female" value="0" name="sex"><label for="sex_female">raw</label>
                                       </li>
                                   </ul>
+                                    </div>
                                   <div class="layui-tab-content" style="height: 100px;">
                                     <div class="layui-tab-item layui-show">
 
                                     </div>
-                                    <div class="layui-tab-item">
+                                    <div class="layui-tab-item parmes">
+                                        <table id="table">
+                                            <tr style="position: absolute;width:100%;height:40px;">
+                                                <th class="values" style="left:0"><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>
+                                                <th class="values" style="left: 32%;"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>
+                                                <th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>
+                                                <th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th>
+                                            </tr>
+
+                                          </table>
 
                                     </div>
                                   </div>
