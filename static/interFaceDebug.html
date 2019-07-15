@@ -22,6 +22,7 @@
             padding-top:45%;
             border:2px solid #92B8B1;
             position:absolute;
+            overflow:auto;
             /*box-shadow:1px 1px #92B8B1 inset ;*/
         }
         .top{
@@ -74,12 +75,6 @@
             padding:0;
             font-size: 20px;
         }
-        .go {
-            display: inline-block;
-            height: 100%;
-            width: 70%;
-            vertical-align: top;
-        }
         .request{
             background-color: #FFFFFF;
             padding-left: 20px;
@@ -117,7 +112,7 @@
              position: absolute;
             top: 10%;
             right: 0;
-            height: 88%;
+            height: 45%;
 
         }
 
@@ -126,62 +121,25 @@
             height: 100%;
             display: table-cell;
         }
-        .format-cash{
-            position: absolute;
-            background-color: #dddddd;
-            height: 25%;
-            top: 0;
-            width: 100%;
-        }
 
-        #table{
+        #table,#table-header{
             position: absolute;
             width: 100%;
             top: 5px;
             right: 0;
         }
-        .key,.value{
-            display: inline-block;
-            position: absolute;
-            width: 70%;
-
-        }
-        .body-font{
-            width: 30px;
-        }
-        .body-font-value{
-            width: 50px;
-        }
-        .values{
-            position:absolute;
-            width: 40%;
-        }
-        .add{
-            position: absolute;
-            right: 20%;
-            top:7%;
-        }
-        .delete{
-            position: absolute;
-            right: 25%;
-            top:7%;
-        }
-        .our-th{
-            position: absolute;
-            width: 100%;
-            }
         .key-value-div{
             position: absolute;
             height: 90%;
             width: 97%;
             right: 0;
-            top:5%;
+            top:0;
         }
         .value-key-div{
             position: absolute;
             height: 85%;
             width: 98%;
-            top:10%;
+            top:19%;
         }
         .value-key-div-1{
             position: absolute;
@@ -195,16 +153,17 @@
             top: 0;
             width: 100%;
             right: 0;
-             height: 100%;
+             height: 89%;
              margin: 0;
+
                 }
         .layui-tab-title .layui-this:after {
             display: none;
         }
         .format-ul{
             position:absolute;
-            height:5%;
-            top: -2%;
+            height:10%;
+            top: -10%;
             width: 100%;
             right: 0;
             border: 1px solid #dddddd;
@@ -233,18 +192,27 @@
             top: 0;
             width: 100%;
             right: 0;
-            height:100% ;
+            height:95% ;
+            overflow:auto;
+
         }
-        .parmes-table{
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
+        .response{
+            position:absolute;
+            width:100%;
+            height:40%;
+            bottom:0;right:0;
+            border: 1px solid #dddddd;
+            box-shadow:0 2px 5px 0 rgba(0,0,0,.1);
         }
-        .parmes-tr{
+        .response-text{
+            height: 37%;
+            bottom: 0;
+            border: 1px solid #dddddd;
             position: absolute;
-            height: 10%;
             width: 100%;
+            right: 0;
+            overflow:auto;
+            box-shadow:0 2px 5px 0 rgba(0,0,0,.1);
         }
     </style>
 </head>
@@ -267,12 +235,12 @@
                 </div>
                   <div class="request">
                       <div class="requesr-input">
-                          <select name="method" lay-verify="" class="layui-input layui-unselect method layui-form-selected">
+                          <select name="method" lay-verify="" class="layui-input layui-unselect method layui-form-selected" id="selected">
                               <option value="1">GET</option>
                               <option value="2">POST</option>
                             </select>
-                          <input class="layui-input request-input" id="request" type="text" placeholder="请输入host" >
-                          <button class="layui-btn request-button" onclick=""><i class="layui-icon"></i>请求</button>
+                          <input class="layui-input request-input" id="url" type="text" placeholder="请输入host" >
+                          <button class="layui-btn request-button" onclick="reqJson()"><i class="layui-icon"></i>请求</button>
                       </div>
                       <div class="layui-tab layui-tab-card query">
                           <ul class="layui-tab-title">
@@ -285,28 +253,25 @@
 
                                         <ul class="layui-tab-title format-ul">
                                               <li class="layui-this format-li" >
-                                                  <input type="radio" checked="" id="sex_male" value="1" name="sex" class="json-input"><label for="sex_male" class="raw-label">application/json</label>
+                                                  <input type="radio" checked="" id="sex_male1" value="1" name="sex" class="json-input"><label for="sex_male1" class="raw-label">application/json</label>
                                               </li>
                                               <li class="format-li">
-                                                  <input type="radio" id="sex_female" value="0" name="sex" class="json-input"><label for="sex_female" class="raw-label">raw</label>
+                                                  <input type="radio" id="sex_female1" value="0" name="sex" class="json-input"><label for="sex_female1" class="raw-label">raw</label>
                                               </li>
                                           </ul>
-
                                   <div class="layui-tab-content key-value-div">
-                                    <div class="layui-tab-item layui-show">
-
+                                    <div class="layui-tab-item layui-show key-value-div"id="request-header" style="width: 101%;height: 100%">
+                                        <textarea class="layui-textarea"id="request-headers" cols="100" rows="10" autofocus="autofocus"style="position: absolute;height:100%;"></textarea>
                                     </div>
                                     <div class="layui-tab-item parmes">
-                                        <table class="parmes-table" id="table">
-                                            <tr class="parmes-tr">
-                                                <th class="values" style="left:0"><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>
-                                                <th class="values" style="left: 32%;"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>
-                                                <th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>
-                                                <th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th>
+                                        <table class="parmes-table" id="table-header">
+                                            <tr style="height: 40px;">
+                                                <th style="width:30%"><i>key:</i><input class='key-header' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>
+                                                <th style="width:30%"><i>value:</i><input class='value-header' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>
+                                                <th style="width:5%;"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-header" onclick="deleteRow2(this)"><i class="layui-icon">&#xe640;</i></button></th>
+                                                <th><button type="button" class="layui-btn layui-btn-sm" id="add-header" onclick="add_header()"><i class="layui-icon">&#xe654;</i></button></th>
                                             </tr>
-
                                           </table>
-
                                     </div>
                                   </div>
                                 </div>
@@ -316,26 +281,44 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
-                            <div class="layui-tab-item"></div>
+                            <div class="layui-tab-item">
+                                <div class="layui-tab layui-tab-card body-format">
+
+                                        <ul class="layui-tab-title format-ul">
+                                              <li class="layui-this format-li" >
+                                                  <input type="radio" checked="" id="sex_male" value="1" name="sex" class="json-input"><label for="sex_male" class="raw-label">application/json</label>
+                                              </li>
+                                              <li class="format-li">
+                                                  <input type="radio" id="sex_female" value="0" name="sex" class="json-input"><label for="sex_female" class="raw-label">raw</label>
+                                              </li>
+                                          </ul>
+                                  <div class="layui-tab-content key-value-div">
+                                    <div class="layui-tab-item layui-show key-value-div"id="request-body" style="width: 101%;height: 100%">
+                                        <textarea class="layui-textarea"id="request-bodys" cols="100" rows="10" autofocus="autofocus"style="position: absolute;height:100%;"></textarea>
+                                    </div>
+                                    <div class="layui-tab-item parmes">
+                                        <table class="parmes-table" id="table">
+                                            <tr style="height: 40px;">
+                                                <th style="width:30%"><i>key:</i><input class='key' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>
+                                                <th style="width:30%"><i>value:</i><input class='value' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>
+                                                <th style="width:5%;"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th>
+                                                <th><button type="button" class="layui-btn layui-btn-sm" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>
+                                            </tr>
+                                          </table>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
                         </div>
+
                   </div>
+                      <div class="response" id="response"><span>response：</span></div><div class="response-text" id="response_text"></div>
             </div>
         </div>
     </div>
 </body>
+
             <script>
             //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
             layui.use('element', function(){

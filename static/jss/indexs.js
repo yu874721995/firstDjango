@@ -4,26 +4,21 @@ function one(){$.post('http://192.168.10.123:9001/session_test',function (data) 
       document.getElementById('msg').innerHTML=userid
     })}
     function add(){
-    var _html;
     var __html;
-         _html = '<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
-            '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>';
-
-         __html = '<tr class="parmes-tr" style="background-color: #00FFFF">'+
-                 '<th class="values" style="left:0"><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>'+
-                '<th class="values" style="left: 32%;"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>'+
-                '<th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>'+
-                '<th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th> </tr>';
+         __html += '<tr style="height: 40px;">\n' +
+                    '<th style="width:30%">key:<input class=\'key\' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>\n' +
+                    ' <th style="width:30%">value:<input class=\'value\' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>\n' +
+                    '<th style="width:5%"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th></tr>'
         $("#table").append(__html);
     }
-            // '<tr><th><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>' +
-            // '<th class="values"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>' +
-            //  '<th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>' +
-            //  '<th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th> </tr>';
+
     function add_header(){
-        var html = '<tr> <th>key:<input class="key-header" type="text" value=""></th><th>value:<input class="value-header" type="text"value=""></th>' +
-            '<th><button class="deletes" id="clear" onclick="deleteRow2(this)">--</button></th></tr>';
-        $("#table-header").append(html);
+        var __html;
+         __html += '<tr style="height: 40px;">\n' +
+                    '<th style="width:30%"><i>key:</i><input class=\'key\' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>\n' +
+                    '<th style="width:30%"><i>value:</i><input class=\'value\' type="text" value="" style="width:82%;height:30px;border: 1px solid #dddddd"></th>\n' +
+                    '<th style="width:5%;"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-header" onclick="deleteRow2(this)"><i class="layui-icon">&#xe640;</i></button></th></tr>'
+        $("#table-header").append(__html);
     }
     //请求用户名
 (function(){
@@ -102,15 +97,27 @@ function username() {
     }
         // #发送请求
     function reqJson() {
-        var url = $('#url').val();
-        var CaseName = $('#CaseName').val();
-        if ($('input[name="name1"]:checked').val() == 'post') {
+            var url = $('#url').val();
+            if(url == ''){
+                layer.msg('亲,url不能为空')
+                return false
+            }
+
+        // var CaseName = $('#CaseName').val();
+
+        //2为post，1为get
+        if ($('#selected option:selected') .val() == '2') {
+            var request_body = $('#request-bodys').val()
+            var request_headers = $('#request-headers').val()
+            var req;
             var postdata = [];
             var postheader = [];
             var key = $('.key');
             var value = $('.value');
             var header_key = $('.key-header');
             var header_value = $('.value-header');
+
+            //处理body的key、value内容
             if (typeof (key) == 'object' && typeof (value) == 'object') {
                 for (var i = 0; i < key.length; i++) {
                     if (isNull(key[i].value)) {
@@ -120,6 +127,100 @@ function username() {
                     }
                 }
             }
+            //处理headers的key、value内容
+            if (typeof (header_key) == 'object' && typeof (header_value) == 'object') {
+                for (var s = 0; s < header_key.length; s++) {
+                    console.log('-----------------------' + isNull(JSON.stringify(header_key[s].value)))
+                    if (isNull(header_key[s].value)) {
+                        chkstrlen(header_key[s].value);
+                        var mu = header_key[s].value + '--' + header_value[s].value;
+                        postheader.push(mu);
+                    }
+                }
+            }else {
+                layer.msg('前端报错了快叫大兄弟来看看')
+            }
+
+            //不能同时传值类型参数和json格式数据
+            if(request_body != '' && postdata != []){
+                layer.msg('请检查参数')
+                return false
+            }
+
+            //如果填入了json格式字符串
+            if(request_body != ''){
+                if(request_headers !=''){
+                    var req = {
+                    url: url,
+                    data: request_body,
+                    header:request_headers,
+                    type: 'post',
+                    CaseName: 1}
+                }else {
+                    var req = {
+                    url: url,
+                    data: request_body,
+                    header:JSON.stringify(postheader),
+                    type: 'post',
+                    CaseName: 1}
+                }
+
+            }else {
+                if(request_headers !=''){
+                    var req = {
+                    url: url,
+                    data: JSON.stringify(postdata),
+                    header:request_headers,
+                    type: 'post',
+                    CaseName: 1}
+                }else {
+                    var req = {
+                    url: url,
+                    data: JSON.stringify(postdata),
+                    header:JSON.stringify(postheader),
+                    type: 'post',
+                    CaseName: 1}
+                }
+            };
+            //发送异步请求
+            $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
+                var json_response = JSON.parse(data);
+                if(json_response.msg=='登录超时'){
+                    layer.msg('登录过期，请重新登录')
+                    return false
+                }
+                userhistory();
+                var str_rep = formatJson(json_response.data)
+                document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
+            });
+
+
+
+        //    如果为get请求时-----
+        } else {
+            var postdata
+            var get_req;
+            var getheader = [];
+            var header_key = $('.key-header');
+            var header_value = $('.value-header');
+            var get_body = $('#request-bodys').val()
+            var get_headers = $('#request-headers').val()
+
+            //判断postdata是否为空
+            if (typeof (key) == 'object' && typeof (value) == 'object') {
+                for (var i = 0; i < key.length; i++) {
+                    if (isNull(key[i].value)) {
+                        chkstrlen(key[i].value);
+                        var mn = key[i].value + '--' + value[i].value;
+                        postdata.push(mn);
+                    }
+                }
+            }
+            if(postdata != [] || get_body != '' ){
+                layer.msg('请求方式为get时请直接将参数拼接在url后')
+            }
+
+            //处理header
             if (typeof (header_key) == 'object' && typeof (header_value) == 'object') {
                 for (var s = 0; s < header_key.length; s++) {
                     console.log('-----------------------' + isNull(JSON.stringify(header_key[s].value)))
@@ -130,53 +231,28 @@ function username() {
                     }
                 }
             }
-            var req = {
-                url: url,
-                data: JSON.stringify(postdata),
-                header: JSON.stringify(postheader),
-                type: 'post',
-                CaseName: CaseName
-            };
-            $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
-                var json_response = JSON.parse(data);
-                if(json_response.msg=='登录超时'){
-                    alert('登录过期，请重新登录')
-                }
+            // 处理header
+            if(get_headers != ''){
+                    get_req={
+                    url: url,
+                    header:get_headers,
+                    type: 'get',
+                    CaseName: 1}
+            }else {
+                get_req={
+                    url: url,
+                    header:JSON.stringify(postheader),
+                    type: 'get',
+                    CaseName: 1}
+            }
+            //发送请求
+            $.post('http://192.168.10.123:9001/reqJson', get_req, function (data) {
                 userhistory();
+                var json_response = JSON.parse(data);
                 var str_rep = formatJson(json_response.data)
                 document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
             });
-        } else {
-            var postdata = [];
-            var key = $('.key');
-            var value = $('.value');
-            if (typeof (key) == 'object' && typeof (value) == 'object') {
-                for (var i = 0; i < key.length; i++) {
-                    var mn = key[i].value + '--' + value[i].value;
-                    postdata.push(mn);
-                }
-                var req = {url: url, data: postdata, type: 'get', CaseName: CaseName};
-                $.post('http://192.168.10.123:9001/reqJson', req, function (data) {
-                    userhistory();
-                    var json_response = JSON.parse(data);
-                    var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
-                });
-            } else {
-                $.post('http://192.168.10.123:9001/reqJson', {
-                    url: url,
-                    key: key,
-                    value: value,
-                    type: 'get',
-                    CaseName: CaseName
-                }, function (data) {
-                    userhistory();
-                    var json_response = JSON.parse(data);
-                    var str_rep = formatJson(json_response.data)
-                    document.getElementById('response_text').innerHTML = '<pre>' + str_rep + '<pre/>';
-                })
             }
-        }
     }
     function SaveTestCase(){
         var url = $('#url').val()

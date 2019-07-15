@@ -27,8 +27,12 @@ class req_debug():
         CaseName = request.POST.get('CaseName', None)
         headers = {}
         user_id = request.session.get('user_id', None)
+        types = request.POST.get('type', None)
+        data = {}
+
         if user_id is None or user_id == '1':
             return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))
+
         if not token is None:
             login_token = self.findToken(user_id)
             if not login_token:
@@ -36,15 +40,35 @@ class req_debug():
             headers['Authorization'] = login_token
         else:
             pass
-        types = request.POST.get('type', None)
-        data = {}
-        body = json.loads(body[0])
-        for i in body:
-            data[i.split('--')[0]] = i.split('--')[1]
-            geturl += i.split('--')[0] + '=' + i.split('--')[1]
-        header = json.loads(header[0])
-        for i in header:
-            headers[i.split('--')[0]] = i.split('--')[1]
+
+        #如果使用的是json格式字符串
+        try:
+            if len(body[0].split('--')) == 1:
+                data = eval(body[0])
+            else:
+                # 处理传入的body
+                body = json.loads(body[0])
+                for i in body:
+                    data[i.split('--')[0]] = i.split('--')[1]
+                    geturl += i.split('--')[0] + '=' + i.split('--')[1]
+        except Exception as e:
+            print('error--------------',e)
+            return  HttpResponse(json.dumps({'status': 500, 'msg': '请检查提交的参数格式'}))
+
+        #同上，处理headers
+        try:
+
+            if len(header[0].split('--')) == 1:
+                headers = eval(header[0])
+            else:
+                # 处理传入的headers
+                header = json.loads(header[0])
+                for i in header:
+                    headers[i.split('--')[0]] = i.split('--')[1]
+        except Exception as e:
+            print('error--------------', e)
+            return HttpResponse(json.dumps({'status': 500, 'msg': '请检查提交的header格式'}))
+
         resopnse_body = ''
         # 发送请求
         print('发送请求的参数:', 'url:', posturl, 'data：', data, 'header:', headers)
