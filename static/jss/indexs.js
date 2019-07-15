@@ -9,9 +9,11 @@ function one(){$.post('http://192.168.10.123:9001/session_test',function (data) 
          _html = '<tr> <th>key:<input class="key" type="text" value=""></th><th>value:<input class="value" type="text"value=""></th>' +
             '<th><button class="deletes" id="clear" onclick="deleteRow(this)">--</button></th></tr>';
 
-         __html = '<tr><th><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>' +
-            '<th class="values"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>' +
-             '<th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th> </tr>';
+         __html = '<tr class="parmes-tr" style="background-color: #00FFFF">'+
+                 '<th class="values" style="left:0"><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>'+
+                '<th class="values" style="left: 32%;"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>'+
+                '<th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>'+
+                '<th><button type="button" class="layui-btn layui-btn-sm delete" id="clear" onclick="deleteRow(this)"><i class="layui-icon">&#xe640;</i></button></th> </tr>';
         $("#table").append(__html);
     }
             // '<tr><th><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>' +

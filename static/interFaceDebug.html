@@ -117,14 +117,10 @@
              position: absolute;
             top: 10%;
             right: 0;
+            height: 88%;
 
         }
-        .body-format{
-            position: absolute;
-            top: 30px;
-            width: 100%;
-            right: 0;
-        }
+
         li{
             position: absolute;
             height: 100%;
@@ -137,12 +133,7 @@
             top: 0;
             width: 100%;
         }
-        .parmes{
-            position: absolute;
-            top: 30%;
-            width: 100%;
-            right: 0;
-        }
+
         #table{
             position: absolute;
             width: 100%;
@@ -167,13 +158,93 @@
         }
         .add{
             position: absolute;
-            right: 15%;
-            top:10px;
+            right: 20%;
+            top:7%;
         }
         .delete{
             position: absolute;
-            right: 20%;
-            top:10px;
+            right: 25%;
+            top:7%;
+        }
+        .our-th{
+            position: absolute;
+            width: 100%;
+            }
+        .key-value-div{
+            position: absolute;
+            height: 90%;
+            width: 97%;
+            right: 0;
+            top:5%;
+        }
+        .value-key-div{
+            position: absolute;
+            height: 85%;
+            width: 98%;
+            top:10%;
+        }
+        .value-key-div-1{
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            right: 0;
+        }
+         .body-format{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            right: 0;
+             height: 100%;
+             margin: 0;
+                }
+        .layui-tab-title .layui-this:after {
+            display: none;
+        }
+        .format-ul{
+            position:absolute;
+            height:5%;
+            top: -1%;
+            width: 100%;
+            right: 0;
+            border: 1px solid #dddddd;
+        }
+        .format-li{
+            position: absolute;
+            height: 100%;
+            width:15%;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .json-input{
+            top: 4px;
+            position: absolute;
+            left: 5%;
+        }
+        .raw-label{
+            position: absolute;
+            top: -10px;
+            left: 20%;
+
+        }
+        .parmes{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            right: 0;
+            height:100% ;
+        }
+        .parmes-table{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .parmes-tr{
+            position: absolute;
+            height: 10%;
+            width: 100%;
         }
     </style>
 </head>
@@ -208,29 +279,26 @@
                             <li class="layui-this">Headers</li>
                             <li>body</li>
                           </ul>
-                          <div class="layui-tab-content" style="height: 100px;">
-                            <div class="layui-tab-item layui-show">
-
-
-
+                          <div class="layui-tab-content value-key-div">
+                            <div class="layui-tab-item layui-show value-key-div-1">
                                 <div class="layui-tab layui-tab-card body-format">
-                                    <div class="format-cash"style="position: absolute;height: 30%;">
-                                  <ul class="layui-tab-title" style="position:absolute;height:20%">
-                                      <li class="layui-this">
-                                          <input type="radio" checked="" id="sex_male" value="1" name="sex"><label for="sex_male">application/json</label>
-                                      </li>
-                                      <li >
-                                          <input type="radio" id="sex_female" value="0" name="sex"><label for="sex_female">raw</label>
-                                      </li>
-                                  </ul>
-                                    </div>
-                                  <div class="layui-tab-content" style="height: 100px;">
+
+                                        <ul class="layui-tab-title format-ul">
+                                              <li class="layui-this format-li" >
+                                                  <input type="radio" checked="" id="sex_male" value="1" name="sex" class="json-input"><label for="sex_male" class="raw-label">application/json</label>
+                                              </li>
+                                              <li class="format-li">
+                                                  <input type="radio" id="sex_female" value="0" name="sex" class="json-input"><label for="sex_female" class="raw-label">raw</label>
+                                              </li>
+                                          </ul>
+
+                                  <div class="layui-tab-content key-value-div">
                                     <div class="layui-tab-item layui-show">
 
                                     </div>
                                     <div class="layui-tab-item parmes">
-                                        <table id="table">
-                                            <tr style="position: absolute;width:100%;height:40px;">
+                                        <table class="parmes-table" id="table">
+                                            <tr class="parmes-tr">
                                                 <th class="values" style="left:0"><label class="layui-form-label body-font">key:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input key"></th>
                                                 <th class="values" style="left: 32%;"><label class="layui-form-label body-font-value">value:</label><input type="text" name="title" required lay-verify="required" autocomplete="off" class="layui-input value"></th>
                                                 <th><button type="button" class="layui-btn layui-btn-sm add" id="add" onclick="add()"><i class="layui-icon">&#xe654;</i></button></th>
