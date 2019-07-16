@@ -93,15 +93,20 @@ class req_debug():
 
             host = models.user_host.objects.filter(host=posturl).order_by('-create_date')
             host_id = host.values()[0]['id']
-            # 存入body
-            for i in body:
-                dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 1}
-                models.user_body.objects.create(**dic)
-            # 存入header
-            for i in header:
-                dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 2}
-                models.user_body.objects.create(**dic)
+            if data != []:
+                # 存入body
+                print(data)
+                for i in body:
+                    dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 1}
+                    models.user_body.objects.create(**dic)
+            if headers != []:
+                # 存入header
+                print('zzzzzzzzzzzzzzz',headers)
+                for i in header:
+                    dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 2}
+                    models.user_body.objects.create(**dic)
         except Exception as e:
+            print(e)
             return HttpResponse(json.dumps({'status': 1, 'msg': e, }))
         return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': resopnse_body}))
 

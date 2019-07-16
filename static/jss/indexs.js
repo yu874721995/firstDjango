@@ -33,19 +33,31 @@ function username() {
 })
 }
     function userhistory() {
+    // var table = layui.table;
+    //         table.render({
+    //       elem: '#historys' //指定原始表格元素选择器（推荐id选择器）
+    //       ,height: 315 //容器高度
+    //       ,cols:[[ //表头
+    //   {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left'}
+    // ]] //设置表头
+    //       ,url:'http://192.168.10.123:9001/UserHistory'
+    //       ,method:'post'
+    //       ,request:{search:''}
+    //       ,done:function (res) {
+    //                 console.log(res)
+    //
+    //             }
+    //     });
         var _html = '';
         var search = $('#input-find').val();
         $.post('http://192.168.10.123:9001/UserHistory' ,{search:search},function (data) {
             json_data = JSON.parse(data);
-            // console.log(json_data.data);
             for(var i=json_data.data.length-1;i>=0;i--){
-                // console.log(i,json_data.data)
-                _html += '<tr><a href="#" style="text-decoration:underline;" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button class="layui-btn layui-btn-xs" onclick="deletecase('+i+')">删除</button><hr/></tr>'
+                _html += '<div><a href="#" style="text-decoration: underline;color: orange" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button class="layui-btn layui-btn-sm" onclick="deletecase('+i+')">删除</button><hr/></div>'
             }
 
-            console.log(_html)
             $("#historys").html(_html)
-    })}
+    })};
 
     function deletecase(r) {
     req = {caseId:json_data.data[r].id};
@@ -88,6 +100,7 @@ function username() {
         var response_bodys = formatJson(r_body)
         document.getElementById('response_text').innerHTML = '<pre style="word-break:break-all;display:inline-block;">'+response_bodys+'<pre/>';
     }
+
     function deleteRow(r) {
         var i = r.parentNode.parentNode.rowIndex;
         if(i>0) {
@@ -108,10 +121,10 @@ function username() {
                 return false
             }
 
-        var CaseName = $('#CaseName').val();
+        var CaseName = $('#caseName').val();
 
         //2为post，1为get
-        if ($('#selected option:selected') .val() == '2') {
+        if ($('#selected option:selected').val() == '2') {
             var request_body = $('#request-bodys').val()
             var request_headers = $('#request-headers').val()
             var req;
@@ -164,14 +177,14 @@ function username() {
                     data: request_body,
                     header:request_headers,
                     type: 'post',
-                    CaseName: 1}
+                    CaseName: CaseName}
                 }else {
                     var req = {
                     url: url,
                     data: request_body,
                     header:JSON.stringify(postheader),
                     type: 'post',
-                    CaseName: 1}
+                    CaseName: CaseName}
                 }
 
             }else {
@@ -181,14 +194,14 @@ function username() {
                     data: JSON.stringify(postdata),
                     header:request_headers,
                     type: 'post',
-                    CaseName: 1}
+                    CaseName: CaseName}
                 }else {
                     var req = {
                     url: url,
                     data: JSON.stringify(postdata),
                     header:JSON.stringify(postheader),
                     type: 'post',
-                    CaseName: 1}
+                    CaseName: CaseName}
                 }
             };
             //发送异步请求
@@ -214,6 +227,7 @@ function username() {
             var header_value = $('.value-header');
             var get_body = $('#request-bodys').val()
             var get_headers = $('#request-headers').val()
+            var CaseName = $('#caseName').val()
 
             //判断postdata是否为空
             if (typeof (key) == 'object' && typeof (value) == 'object') {
@@ -253,7 +267,7 @@ function username() {
                     url: url,
                     header:JSON.stringify(postheader),
                     type: 'get',
-                    CaseName: 1}
+                    CaseName: CaseName}
             }
             //发送请求
             $.post('http://192.168.10.123:9001/reqJson', get_req, function (data) {

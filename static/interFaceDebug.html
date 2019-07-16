@@ -9,227 +9,12 @@
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./css/debug.css">
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
-    <script src="/static/jss/zepto.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script src="/static/jss/indexs.js"></script>
-    <style>
-        .history{
-            display: inline-block;
-            width:20%;
-            height:0;
-            background-color: white;
-            padding-top:45%;
-            border:2px solid #92B8B1;
-            position:absolute;
-            overflow:auto;
-            /*box-shadow:1px 1px #92B8B1 inset ;*/
-            word-break:break-all;
-        }
-        .top{
-            height: 0;
-            width: 100%;
-            display: inline-block;
-            background-color: #dddddd;
-            position:absolute;
-            padding-top: 30%;
-            top:0;
-            right:0;
-            border:1px solid #9F9F9F;
-        }
-        .find{
-            height: 0;
-            width: 100%;
-            display: inline-block;
-            background-color: #dddddd;
-            position:absolute;
-            padding-top: 15%;
-            top:0;
-            right:0;
-            border:1px solid #92B8B1;
-        }
-        .find-input{
-            padding-top: 5%;
-            width: 80%;
-            height: 100%;
-            top:0;
-            right:0;
-            display: inline-block;
-            position:absolute;
 
-        }
-        .find-button{
-            width: 20%;
-            height: 100%;
-            top:0;
-            left:0;
-            position:absolute;
-        }
-        .history-text{
-            position: absolute;
-            bottom:0;
-            text-align:center;
-            width: 100%;
-            height: 40%;
-            display: inline-block;
-            background-color: #dddddd;
-            padding:0;
-            font-size: 20px;
-        }
-        .request{
-            background-color: #FFFFFF;
-            padding-left: 20px;
-            display: inline-block;
-            right: 20px;
-            height: 0;
-            width: 75%;
-            position: absolute;
-            padding-top:45%;
-        }
-        .requesr-input{
-            border: 2px solid #dddddd;
-            position: absolute;
-            top: 2%;
-            right: 3%;
-            width: 95%;
-        }
-        .method{
-            width: 8%;
-        }
-        .request-input{
-            position: absolute;
-            width: 72%;
-            top: 0;
-            right: 23%;
-        }
-        .request-button{
-            width: 10%;
-            position: absolute;
-            top: 0;
-            right: 13%;
-        }
-        .case-button{
-            width: 12%;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-        .query{
-            width: 99%;
-             position: absolute;
-            top: 10%;
-            right: 0;
-            height: 45%;
-
-        }
-
-        li{
-            position: absolute;
-            height: 100%;
-            display: table-cell;
-        }
-
-        #table,#table-header{
-            position: absolute;
-            width: 100%;
-            top: 5px;
-            right: 0;
-        }
-        .key-value-div{
-            position: absolute;
-            height: 90%;
-            width: 97%;
-            right: 0;
-            top:0;
-        }
-        .value-key-div{
-            position: absolute;
-            height: 85%;
-            width: 98%;
-            top:19%;
-        }
-        .value-key-div-1{
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            top: 0;
-            right: 0;
-        }
-         .body-format{
-            position: absolute;
-            top: 0;
-            width: 100%;
-            right: 0;
-             height: 89%;
-             margin: 0;
-
-                }
-        .layui-tab-title .layui-this:after {
-            display: none;
-        }
-        .format-ul{
-            position:absolute;
-            height:10%;
-            top: -10%;
-            width: 100%;
-            right: 0;
-            border: 1px solid #dddddd;
-        }
-        .format-li{
-            position: absolute;
-            height: 100%;
-            width:15%;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        .json-input{
-            top: 4px;
-            position: absolute;
-            left: 5%;
-        }
-        .raw-label{
-            position: absolute;
-            top: -10px;
-            left: 20%;
-
-        }
-        .parmes{
-            position: absolute;
-            top: 0;
-            width: 100%;
-            right: 0;
-            height:95% ;
-            overflow:auto;
-
-        }
-        .response{
-            position:absolute;
-            width:100%;
-            height:40%;
-            bottom:0;right:0;
-            border: 1px solid #dddddd;
-            box-shadow:0 2px 5px 0 rgba(0,0,0,.1);
-        }
-        .response-text{
-            height: 37%;
-            bottom: 0;
-            border: 1px solid #dddddd;
-            position: absolute;
-            width: 100%;
-            right: 0;
-            overflow:auto;
-            box-shadow:0 2px 5px 0 rgba(0,0,0,.1);
-        }
-        .history-div{
-            position: absolute;
-            display: inline-block;
-            top: 15%;
-            height: 84%;
-            width: auto;
-            left: 0;
-        }
-    </style>
 </head>
 <body style="margin:0;padding:0;">
   <div class="x-nav">
@@ -242,13 +27,13 @@
                 <div class="layui-col-md12 history">
                     <div class="top">
                         <div class="find">
-                            <button class="find-button" type="button" onclick="userhistory()"><i class="layui-icon layui-icon-search "></i></button>
+                            <button class=" find-button" type="button" onclick="userhistory()"><i class=" layui-icon layui-icon-search "></i></button>
                             <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入接口名称查询" >
                         </div>
                         <div class="history-text">history</div>
                     </div>
-                    <div class="history-div">
-<!--                        <table id="historys"></table>-->
+                    <div class="history-div" id = historys-div>
+                        <table id="historys"></table>
                     </div>
 
                 </div>
@@ -261,6 +46,10 @@
                           <input class="layui-input request-input" id="url" type="text" placeholder="请输入host" >
                           <button class="layui-btn request-button" onclick="reqJson()"><i class="layui-icon"></i>调试请求</button>
                           <button class="layui-btn case-button" onclick="SaveTestCase()"><i class="layui-icon"></i>保存为用例</button>
+                      </div>
+                      <div class="casename">
+                          <span class="casenametext">接口名称：</span>
+                          <input class="layui-input case-input" id="caseName" type="text" placeholder="请输入接口名称" >
                       </div>
                       <div class="layui-tab layui-tab-card query">
                           <ul class="layui-tab-title">
@@ -333,24 +122,14 @@
                         </div>
 
                   </div>
-                      <div class="response" id="response"><span>response：</span></div><div class="response-text" id="response_text"></div>
+                      <div class="response" id="response"><span>response：</span><div class="response-text" id="response_text"></div></div>
             </div>
         </div>
     </div>
-<div>
-<!--    id="historys"-->
-    <table id="historys">
-<!--        <tr>-->
-<!--            <td>-->
-<!--                1111-->
-<!--            </td>-->
-<!--        </tr>-->
-    </table>
-</div>
 </body>
 
             <script>
-            //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+            // 注意：选项卡 依赖 element 模块，否则无法进行功能性操作
             layui.use('element', function(){
               var element = layui.element;
 
