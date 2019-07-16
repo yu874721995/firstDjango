@@ -53,6 +53,7 @@ function username() {
         $.post('http://192.168.10.123:9001/UserHistory' ,{search:search},function (data) {
             json_data = JSON.parse(data);
             for(var i=json_data.data.length-1;i>=0;i--){
+                //此处必须用div包裹，否则无法渲染！
                 _html += '<div><a href="#" style="text-decoration: underline;color: orange" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button class="layui-btn layui-btn-sm" onclick="deletecase('+i+')">删除</button><hr/></div>'
             }
 
