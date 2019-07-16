@@ -24,6 +24,7 @@ function one(){$.post('http://192.168.10.123:9001/session_test',function (data) 
 (function(){
         userhistory(),username();
 })()
+
 function username() {
         $.post('http://192.168.10.123:9001/username' , function (data) {
         var json_data = JSON.parse(data);
@@ -32,16 +33,20 @@ function username() {
 })
 }
     function userhistory() {
-        var _html = ''
-        $.post('http://192.168.10.123:9001/UserHistory' , function (data) {
-        json_data = JSON.parse(data);
-        // console.log(json_data.data);
-        for(var i=json_data.data.length-1;i>=0;i--){
-            // console.log(i,json_data.data)
-            _html += '<tr><a href="#" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button onclick="deletecase('+i+')">删除</button></tr>'
-        }
-        $("#historys").html(_html)
+        var _html = '';
+        var search = $('#input-find').val();
+        $.post('http://192.168.10.123:9001/UserHistory' ,{search:search},function (data) {
+            json_data = JSON.parse(data);
+            // console.log(json_data.data);
+            for(var i=json_data.data.length-1;i>=0;i--){
+                // console.log(i,json_data.data)
+                _html += '<tr><a href="#" style="text-decoration:underline;" onclick="getBody('+i+')">'+json_data.data[i].host+'</a><br/>'+json_data.data[i].create_date+'<br/>'+"接口名称:"+json_data.data[i].CaseName+'<button class="layui-btn layui-btn-xs" onclick="deletecase('+i+')">删除</button><hr/></tr>'
+            }
+
+            console.log(_html)
+            $("#historys").html(_html)
     })}
+
     function deletecase(r) {
     req = {caseId:json_data.data[r].id};
         $.post('http://192.168.10.123:9001/deletecase' , req,function (data) {
@@ -103,7 +108,7 @@ function username() {
                 return false
             }
 
-        // var CaseName = $('#CaseName').val();
+        var CaseName = $('#CaseName').val();
 
         //2为post，1为get
         if ($('#selected option:selected') .val() == '2') {
@@ -142,8 +147,12 @@ function username() {
             }
 
             //不能同时传值类型参数和json格式数据
-            if(request_body != '' && postdata != []){
-                layer.msg('请检查参数')
+            if(request_body != '' && postdata != undefined){
+                layer.msg('不能同时使用两种参数')
+                return false
+            }
+            if(request_headers != '' && postheader != undefined){
+                layer.msg('不能同时使用两种头部参数')
                 return false
             }
 
@@ -216,7 +225,8 @@ function username() {
                     }
                 }
             }
-            if(postdata != [] || get_body != '' ){
+        console.log(postdata,get_body)
+            if(get_body != '' || postdata != undefined ){
                 layer.msg('请求方式为get时请直接将参数拼接在url后')
             }
 
@@ -305,11 +315,12 @@ function isNull(strs) {
         return true
     }
 }
+
 //key不允许包含中文
 function chkstrlen(str) {
     for (var i = 0; i < str.length; i++) {
         if (str.charCodeAt(i) > 255) { //如果是汉字
-            alert('参数key不允许输入汉字')
+            layer.msg('参数key不允许输入汉字')
             return
         }
     }

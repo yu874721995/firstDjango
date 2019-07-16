@@ -24,6 +24,7 @@
             position:absolute;
             overflow:auto;
             /*box-shadow:1px 1px #92B8B1 inset ;*/
+            word-break:break-all;
         }
         .top{
             height: 0;
@@ -97,13 +98,19 @@
         }
         .request-input{
             position: absolute;
-            width: 82%;
+            width: 72%;
             top: 0;
-            right: 10%;
+            right: 23%;
         }
         .request-button{
             width: 10%;
-             position: absolute;
+            position: absolute;
+            top: 0;
+            right: 13%;
+        }
+        .case-button{
+            width: 12%;
+            position: absolute;
             top: 0;
             right: 0;
         }
@@ -214,6 +221,14 @@
             overflow:auto;
             box-shadow:0 2px 5px 0 rgba(0,0,0,.1);
         }
+        .history-div{
+            position: absolute;
+            display: inline-block;
+            top: 15%;
+            height: 84%;
+            width: auto;
+            left: 0;
+        }
     </style>
 </head>
 <body style="margin:0;padding:0;">
@@ -227,11 +242,15 @@
                 <div class="layui-col-md12 history">
                     <div class="top">
                         <div class="find">
-                            <button class="find-button" type="button"><i class="layui-icon layui-icon-search "></i></button>
-                            <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入host查询" >
+                            <button class="find-button" type="button" onclick="userhistory()"><i class="layui-icon layui-icon-search "></i></button>
+                            <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入接口名称查询" >
                         </div>
                         <div class="history-text">history</div>
                     </div>
+                    <div class="history-div">
+<!--                        <table id="historys"></table>-->
+                    </div>
+
                 </div>
                   <div class="request">
                       <div class="requesr-input">
@@ -240,7 +259,8 @@
                               <option value="2">POST</option>
                             </select>
                           <input class="layui-input request-input" id="url" type="text" placeholder="请输入host" >
-                          <button class="layui-btn request-button" onclick="reqJson()"><i class="layui-icon"></i>请求</button>
+                          <button class="layui-btn request-button" onclick="reqJson()"><i class="layui-icon"></i>调试请求</button>
+                          <button class="layui-btn case-button" onclick="SaveTestCase()"><i class="layui-icon"></i>保存为用例</button>
                       </div>
                       <div class="layui-tab layui-tab-card query">
                           <ul class="layui-tab-title">
@@ -317,6 +337,16 @@
             </div>
         </div>
     </div>
+<div>
+<!--    id="historys"-->
+    <table id="historys">
+<!--        <tr>-->
+<!--            <td>-->
+<!--                1111-->
+<!--            </td>-->
+<!--        </tr>-->
+    </table>
+</div>
 </body>
 
             <script>

@@ -45,10 +45,18 @@ class user_list():
 
     def userHistory(self,request):
         username = request.session.get('username', 1)
+        search = request.POST.get('search',None)
+        print('ssssssssss',search)
+        user_host_history = ''
         if username == 1:
             return HttpResponse(json.dumps({'status': 1, 'msg': '登录过期'}))
         user_id = models.UserInfo.objects.get(username=username).id
-        user_host_history = models.user_host.objects.filter(userid=user_id, status=1).values()
+        if search == '':
+            user_host_history = models.user_host.objects.filter(userid=user_id, status=1).values()
+
+        else:
+            user_host_history = models.user_host.objects.filter(userid=user_id, status=1,
+                                                                casename__icontains=search).values()
         user_history = []
         for i in user_host_history:
             everyhost = {}
