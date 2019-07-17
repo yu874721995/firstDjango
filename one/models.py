@@ -20,6 +20,8 @@ class user_host(models.Model):
     response_body = models.TextField(max_length=200,default='ZZZ')
     userid = models.IntegerField()
     method = models.CharField(max_length=20,default='post')
+    json_body = models.CharField(max_length=200, blank=False, default='')
+    json_header = models.CharField(max_length=200, blank=False, default='')
     casename = models.CharField(max_length=100,default='暂无名称')
 
 class user_body(models.Model):

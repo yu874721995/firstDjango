@@ -78,6 +78,8 @@ class user_list():
             everyhost['response_body'] = i['response_body']
             everyhost['type'] = i['method']
             everyhost['CaseName'] = i['casename']
+            everyhost['json_body'] = i['json_body']
+            everyhost['json_header'] = i['json_header']
             user_history.append(everyhost)
         return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': user_history}, cls=DateEncoder))
 

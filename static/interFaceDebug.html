@@ -27,8 +27,8 @@
                 <div class="layui-col-md12 history">
                     <div class="top">
                         <div class="find">
-                            <button class=" find-button" type="button" onclick="userhistory()"><i class=" layui-icon layui-icon-search "></i></button>
-                            <input class="layui-input find-input" id="input-find" type="text" placeholder="请输入接口名称查询" >
+                            <button id='btnValidate' class=" find-button" type="button" onclick="userhistory()"><i class=" layui-icon layui-icon-search "></i></button>
+                            <input onkeypress="if(event.keyCode==13) {btnValidate.click();return false;}" class="layui-input find-input" id="input-find" type="text" placeholder="请输入接口名称查询" >
                         </div>
                         <div class="history-text">history</div>
                     </div>
@@ -45,7 +45,7 @@
                             </select>
                           <input class="layui-input request-input" id="url" type="text" placeholder="请输入host" >
                           <button class="layui-btn request-button" onclick="reqJson()"><i class="layui-icon"></i>调试请求</button>
-                          <button class="layui-btn case-button" onclick="SaveTestCase()"><i class="layui-icon"></i>保存为用例</button>
+                          <button class="layui-btn case-button" onclick="xadmin.open('用例编辑','/static/caseupdate.html',1000,600)"><i class="layui-icon"></i>保存为用例</button>
                       </div>
                       <div class="casename">
                           <span class="casenametext">接口名称：</span>
