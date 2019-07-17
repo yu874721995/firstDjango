@@ -277,6 +277,35 @@ function isNull(strs) {
     }
 }
 
+function openAdd(){
+        parent.layer.open({
+        type:1
+    ,title: '添加用例'
+    ,content: '<form class="layui-form" action=""><div class="layui-form-item"><label class="layui-form-label">用例名称</label>' +
+                '<div class="layui-form"><div class="layui-inline"><select id="pid-cp" onchange="gradeChange(1)" name="city" lay-verify="required">'+
+                '<option value="">请选择产品</option><option grade="产品" value="">添加产品</option></select></div>'+
+                '<div class="layui-inline"><select id="pid-mk" onchange="gradeChange(2)" name="city" lay-verify="required"><option value="">请选择模块</option><option grade="模块" value="">添加模块</option></select></div>'+
+                '<div class="layui-input-inline"><input type="password" name="password" required lay-verify="required" placeholder="请输入用例名称" autocomplete="off" class="layui-input"></div></div>'+
+                '</div><div class="layui-form-item"><label class="layui-form-label">接口地址</label><div class="layui-input-block"><input type="text" name="title" required  lay-verify="required" placeholder="请输入接口地址" autocomplete="off" class="layui-input"></div></div>'+
+                '<div class="layui-form-item"><label class="layui-form-label">请求方式</label><div class="layui-input-block"><input type="radio" name="sex" value="男" title="get"><input type="radio" name="sex" value="女" title="post" checked></div></div>'+
+                '<div class="layui-form-item layui-form-text"><label class="layui-form-label">请求header</label><div class="layui-input-block"><textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea></div></div>'+
+                '<div class="layui-form-item layui-form-text"><label class="layui-form-label">请求body</label><div class="layui-input-block"><textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea></div></div>'+
+                '<div class="layui-form-item"><label class="layui-form-label">断言设置</label><div class="layui-form"><div class="layui-input-inline"><input type="password" name="password" required lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input"> </div>'+
+                '<div class="layui-input-inline"><input type="password" name="password" required lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input"></div> </div></div>'+
+                '<div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button><button type="reset" class="layui-btn layui-btn-primary">重置</button></div></div></form>'
+     ,skin:'layui-layer-lan'
+     ,area: ['1000px', '600px']
+     ,btnAlign: 'c'
+     ,shadeClose:true
+     ,yes: function(index, layero) {
+            //do something
+            layer.close(index);
+            location.reload()
+        }
+     ,success: function(layero){
+    }
+})}
+
 //key不允许包含中文
 function chkstrlen(str) {
     for (var i = 0; i < str.length; i++) {

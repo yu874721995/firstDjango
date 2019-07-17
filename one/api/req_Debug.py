@@ -99,7 +99,11 @@ class req_debug():
             try:
                 print('get请求---------------网址：',url)
                 r = requests.get(url)
-                resopnse_body = r.json()
+                try:
+                    resopnse_body = r.json()
+                except Exception as e:
+                    print(r.text)
+                    resopnse_body = r.text
             except Exception as e:
                 print('error--------------5', e)
                 return HttpResponse(json.dumps({'status': 500, 'msg': '请求错误'}))
