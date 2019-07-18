@@ -56,37 +56,35 @@ function addcpChoice(name) {
 
             });
     }else {
-        //     parent.layer.open({
-//         type:1
-//     ,title: '添加产品'
-//     ,content:'<form class="layui-form" action=""><div class="layui-form-item" style="margin-top: 50px"><label class="layui-form-label">产品名称</label>' +
-//             '<input id="cpName" type="text" name="cpName" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input layui-input-inline"></div></form>'
-//             // '<div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="choiceDemo">添加</button></div></div>'
-//      ,skin:'layui-layer-lan'
-//      ,area: ['400px', '300px']
-//      ,btn :'添加'
-//      ,btnAlign: 'c'
-//      ,shadeClose:true
-//      ,yes: function(index, layero) {
-//             // //点击确认按钮时的操作回调
-//             // var repjson,cpname;
-//             // var hh = parent.layer.getChildFrame('form',layer.index);
-//             // console.log(hh)
-//             // var cpname = $('#cpName').val()
-//             // console.log('cpname',cpname)
-//             // $.post('http://192.168.10.123:9001/addChoice',{cpname:cpname,type:1},function(data){
-//             //     repjson = JSON.parse(data)
-//             //     if(repjson.status == 1){
-//             //         parent.layer.
-//             //         parent.layer.close(index);
-//             //     }else {
-//             //         parent.layer.msg(repjson.msg)
-//             //     }
-//             // })
-//             // location.reload()
-//
-//         }
-//      ,success: function(layero){
-//     }
-// })
+            parent.layer.open({
+        type:1
+    ,title: '添加产品'
+    ,content:'<form class="layui-form" action=""><div class="layui-form-item" style="margin-top: 50px"><label class="layui-form-label">产品名称</label>' +
+            '<input id="cpName" type="text" name="cpName" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input layui-input-inline"></div></form>'
+            // '<div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="choiceDemo">添加</button></div></div>'
+     ,skin:'layui-layer-lan'
+     ,area: ['400px', '300px']
+     ,btn :'添加'
+     ,btnAlign: 'c'
+     ,shadeClose:true
+     ,yes: function(index, layero) {
+            //点击确认按钮时的操作回调
+            var repjson,cpname;
+            var hh = parent.layer.getChildFrame('form',layer.index);
+            console.log(hh)
+            var cpname = $('#layui-layer2').find('#cpName').val()
+            console.log('cpname',cpname)
+            $.post('http://192.168.10.123:9001/addChoice',{cpname:cpname,type:2},function(data){
+                repjson = JSON.parse(data)
+                if(repjson.status == 1){
+                    parent.layer.
+                    parent.layer.close(index);
+                }else {
+                    parent.layer.msg(repjson.msg)
+                }
+            })
+        }
+     ,success: function(layero){
+    }
+})
     }};
