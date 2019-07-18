@@ -20,6 +20,7 @@ from one.api.updateUser import update_Users as user
 from one.api.userList import user_list as users
 from one.api.req_Debug import req_debug as req
 from one.api.login import Login as login
+from one.api.CaseChoice import caseChoice as case
 
 
 urlpatterns = [
@@ -43,6 +44,7 @@ urlpatterns = [
     re_path('user_delete',user().user_delete),
     re_path('userDelList',users().userDelList),
     re_path('recoverCustomer',users().recoverCustomer),
+    re_path('addChoice',case().addChoice),
 ]
 
 

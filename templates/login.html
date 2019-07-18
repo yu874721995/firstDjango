@@ -24,47 +24,47 @@
         <div id="darkbannerwrap"></div>
         
         <div class="layui-form" >
-            <input id='user' name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
+            <input onkeypress="if(event.keyCode==13) {logins.click();return false;}"  id='user' name="username" placeholder="用户名"  type="text" lay-verify="required" class="layui-input" >
             <hr class="hr15">
-            <input id='pwd' name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
+            <input onkeypress="if(event.keyCode==13) {logins.click();return false;}" id='pwd' name="password" lay-verify="required" placeholder="密码"  type="password" class="layui-input">
             <hr class="hr15">
-            <input onclick="login()" value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+            <button id="logins" onclick="login()" value="登录" lay-submit lay-filter="login" style="width:100%;"class="layui-btn layui-btn-lg" type="submit">登录</button>
             <hr class="hr20" >
         </div>
     </div>
 
-{#    <script>#}
-{#        $(function  () {#}
-{#            layui.use('div', function(){#}
-{#              var form = layui.form;#}
-{#              // layer.msg('玩命卖萌中', function(){#}
-{#              //   //关闭后的操作#}
-{#              //   });#}
-{#              //监听提交#}
-{#              form.on('submit(login)', function(data){#}
-{#                // alert(888)#}
-{#                layer.msg(JSON.stringify(data.field),function(){#}
-{#                    location.href='index.html'#}
-{#                //});#}
-{#                layer.msg(JSON.stringify('登录成功'),{time:5000},function(){#}
-{#                    location.href='index.html'#}
-{##}
-{#                });#}
-{#                return false;#}
-{#              });#}
-{#            });#}
-{#        })#}
-{#    </script>#}
-    <!-- 底部结束 -->
-{#    <script>#}
-    {#//百度统计可去掉#}
-    {#var _hmt = _hmt || [];#}
-    {#(function() {#}
-    {#  var hm = document.createElement("script");#}
-    {#  hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";#}
-    {#  var s = document.getElementsByTagName("script")[0]; #}
-    {#  s.parentNode.insertBefore(hm, s);#}
-{#    })();#}
-{#    </script>#}
+<!--{#    <script>#}-->
+<!--{#        $(function  () {#}-->
+<!--{#            layui.use('div', function(){#}-->
+<!--{#              var form = layui.form;#}-->
+<!--{#              // layer.msg('玩命卖萌中', function(){#}-->
+<!--{#              //   //关闭后的操作#}-->
+<!--{#              //   });#}-->
+<!--{#              //监听提交#}-->
+<!--{#              form.on('submit(login)', function(data){#}-->
+<!--{#                // alert(888)#}-->
+<!--{#                layer.msg(JSON.stringify(data.field),function(){#}-->
+<!--{#                    location.href='index.html'#}-->
+<!--{#                //});#}-->
+<!--{#                layer.msg(JSON.stringify('登录成功'),{time:5000},function(){#}-->
+<!--{#                    location.href='index.html'#}-->
+<!--{##}-->
+<!--{#                });#}-->
+<!--{#                return false;#}-->
+<!--{#              });#}-->
+<!--{#            });#}-->
+<!--{#        })#}-->
+<!--{#    </script>#}-->
+<!--    &lt;!&ndash; 底部结束 &ndash;&gt;-->
+<!--{#    <script>#}-->
+<!--    {#//百度统计可去掉#}-->
+<!--    {#var _hmt = _hmt || [];#}-->
+<!--    {#(function() {#}-->
+<!--    {#  var hm = document.createElement("script");#}-->
+<!--    {#  hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";#}-->
+<!--    {#  var s = document.getElementsByTagName("script")[0]; #}-->
+<!--    {#  s.parentNode.insertBefore(hm, s);#}-->
+<!--{#    })();#}-->
+<!--{#    </script>#}-->
 </body>
 </html>

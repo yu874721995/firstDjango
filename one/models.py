@@ -41,6 +41,15 @@ class user_TestCase_host(models.Model):
     userid = models.IntegerField()
     method = models.CharField(max_length=20, default='post')
 
+class casecp_mk(models.Model):
+    id = models.AutoField(primary_key=True, blank=False)
+    status = models.CharField(max_length=20, default=1)
+    type = models.CharField(max_length=20, default=1)
+    name = models.CharField(max_length=200, blank=False)
+    subjection = models.CharField(max_length=20, default='')
+    create_date = models.DateTimeField(default=timezone.now)
+
+
 class user_TestCase_body(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
     status = models.CharField(max_length=20, default=1)
