@@ -28,7 +28,7 @@
 
       <div class="layui-form-item">
           <label class="layui-form-label">用例名称</label>
-          <input type="text" name="caseName" required lay-verify="required" placeholder="请输入用例名称" autocomplete="off" class="layui-input layui-input-inline">
+          <input id="casename" type="text" name="caseName" required lay-verify="required" placeholder="请输入用例名称" autocomplete="off" class="layui-input layui-input-inline">
 <!--          <div class="layui-inline"><select id="pid-cp" lay-verify="required" name="cpChoice" lay-verify=""><option value="">请选择产品</option><option grade="产品" value="1">易中奖</option></select></div>-->
 <!--          <div class="layui-inline"><button type="button" onclick="addcpChoice()" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div>-->
 <!--          <div class="layui-inline"><select id="pid-mk" lay-verify="required" name="mkChoice" lay-verify=""><option value="">请选择模块</option><option grade="模块" value="2">首页</option></select></div>-->
@@ -37,16 +37,16 @@
        <div class="layui-form-item">
           <label class="layui-form-label">选择目录</label>
 <!--          <input type="text" name="caseName" required lay-verify="required" placeholder="请输入用例名称" autocomplete="off" class="layui-input layui-input-inline">-->
-          <div class="layui-inline"><select id="pid-cp" lay-verify="required" name="cpChoice" lay-verify=""><option value="">请选择产品</option><option grade="产品" value="1">易中奖</option></select></div>
+          <div class="layui-inline"><select id="pid-cp" lay-verify="required" name="cpChoice" lay-search></select></div>
           <div class="layui-inline"><button type="button" onclick="addcpChoice('cp')" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div>
-          <div class="layui-inline"><select id="pid-mk" lay-verify="required" name="mkChoice" lay-verify=""><option value="">请选择模块</option><option grade="模块" value="2">首页</option></select></div>
+          <div class="layui-inline"><select id="pid-mk" lay-verify="required" name="mkChoice" lay-search></select></div>
           <div class="layui-inline"><button type="button" onclick="addcpChoice('mk')" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div>
       </div>
 
       <div class="layui-form-item">
           <label class="layui-form-label">接口地址</label>
           <div class="layui-input-block">
-              <input type="text" name="caseUrl" required  lay-verify="required" placeholder="请输入接口地址" autocomplete="off" class="layui-input">
+              <input id="caseurl" type="text" name="caseUrl" required  lay-verify="required" placeholder="请输入接口地址" autocomplete="off" class="layui-input">
           </div>
       </div>
 
@@ -55,22 +55,22 @@
       <div class="layui-form-item">
           <label class="layui-form-label">单选框</label>
           <div class="layui-input-block">
-              <input type="radio" name="get" value="get" title="get">
-              <input type="radio" name="post" value="post" title="post" checked>
+              <input id='get' type="radio" name="method" value="1" title="get">
+              <input id='post' type="radio" name="method" value="2" title="post" >
           </div>
       </div>
 
       <div class="layui-form-item layui-form-text">
           <label class="layui-form-label">body</label>
           <div class="layui-input-block" >
-              <textarea style="min-height: unset" name="body" placeholder="请输入内容" class="layui-textarea"></textarea>
+              <textarea id="bodyText"style="min-height: unset" name="body" placeholder="请输入内容" class="layui-textarea"></textarea>
           </div>
       </div>
 
       <div class="layui-form-item layui-form-text">
           <label class="layui-form-label">header</label>
           <div class="layui-input-block">
-            <textarea style="min-height: unset" name="header" placeholder="请输入内容" class="layui-textarea"></textarea>
+            <textarea id="headerText" style="min-height: unset" name="header" placeholder="请输入内容" class="layui-textarea"></textarea>
           </div>
       </div>
 
@@ -97,36 +97,15 @@
 //Demo
 layui.use('form', function(){
   var form = layui.form;
+  form.render();
 
   //监听提交
   form.on('submit(formDemo)', function(data){
-      addProducts('产品');
+      // addProducts('产品');
     layer.msg(JSON.stringify(data.field));
     return false;
   });
 });
-</script>
-
-<script>
-//Demo
-layui.use('form', function(){
-  var form = layui.form;
-
-  //监听提交
-  form.on('submit(formDemo)', function(data){
-      console.log('hhhhh');
-    // layer.msg(JSON.stringify(data.field));
-
-    return false;
-  });
-
-  form.on('row(addcp)',function (obj) {
-                    console.log(obj)
-                    alert('hhhh')
-                })
-});
-
-
 </script>
 
 

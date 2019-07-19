@@ -15,7 +15,7 @@ from Public.JsonData import DateEncoder
 
 class caseChoice():
 
-
+    #添加产品或添加模块
     def addChoice(self,request):
         cpname = request.POST.get('cpname',None)
         types = request.POST.get('type',None)
@@ -30,6 +30,34 @@ class caseChoice():
                 print('error----------------1',e)
                 return HttpResponse(json.dumps({'status':1, 'msg': '数据库错误'}))
         else:
-            return HttpResponse(json.dumps({'status':200, 'msg': 'shaodeng'}))
+            subjection = request.POST.get('subjection',None)
+            if subjection == '' or subjection == None:
+                return HttpResponse(json.dumps({'status': 200, 'msg': '必须选择上级产品'}))
+            try:
+                dic = {'type':'2', 'name': cpname,'subjection':subjection }
+                models.casecp_mk.objects.create(**dic)
+                return HttpResponse(json.dumps({'status':1, 'msg': '操作成功'}))
+            except Exception as e:
+                print('error----------------1',e)
+                return HttpResponse(json.dumps({'status':1, 'msg': '数据库错误'}))
+
+    #查询产品及模块列表
+    def queryForProduct(self,request):
+        #仅查询产品列表
+        query = models.casecp_mk.objects.filter(status=1,type=1).values()
+        data = []
+        for item in query:
+            mores = {}
+            mores['id'] = item['id']
+            mores['type'] = item['type']
+            mores['name'] = item['name']
+            mores['create_date'] = item['create_date']
+            data.append(mores)
+        print('response==================',data)
+        return HttpResponse(json.dumps({'status':1, 'msg': '操作成功','data':data},cls=DateEncoder))
+
+
+
+
 
 

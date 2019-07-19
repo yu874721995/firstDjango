@@ -1,45 +1,8 @@
 
-function addProducts(name) {
-    parent.layer.open({
-        type:1
-    ,title: '添加' + name
-    ,content: '<div class="layui-input-inline">\n' +
-            '            <input type="password" name="password" required lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input">\n' +
-            '          </div>'
-     ,skin:'layui-layer-lan'
-     ,area: ['400', '300px']
-     ,btn :'添加'
-     ,btnAlign: 'c'
-     ,shadeClose:true
-     ,yes: function(index, layero) {
-            //do something
-            layer.close(index);
-        }
-     ,success: function(layero){
-    }
-
-});
-}
-
-function submit() {
-    alert('jjjjjjjjj')
-}
-
-function gradeChange(r){
-                var cp = document.getElementById("pid-cp");
-                var grade = cp.options[cp.selectedIndex].grade;
-
-                // var mk = document.getElementById("pid-mk");
-                // var grade = mk.options[mk.selectedIndex].grade;
-            // }
-
-
-        alert(grade);
-       }
-
 function addcpChoice(name) {
     var repjson;
     if(name == 'cp'){
+        //打开添加产品弹窗
         parent.layer.prompt({
               value: '',
               title: '请输入产品名称',
@@ -56,35 +19,56 @@ function addcpChoice(name) {
 
             });
     }else {
+            //打开添加模块弹窗
             parent.layer.open({
-        type:1
-    ,title: '添加产品'
-    ,content:'<form class="layui-form" action=""><div class="layui-form-item" style="margin-top: 50px"><label class="layui-form-label">产品名称</label>' +
-            '<input id="cpName" type="text" name="cpName" required lay-verify="required" placeholder="请输入产品名称" autocomplete="off" class="layui-input layui-input-inline"></div></form>'
-            // '<div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="choiceDemo">添加</button></div></div>'
-     ,skin:'layui-layer-lan'
-     ,area: ['400px', '300px']
-     ,btn :'添加'
-     ,btnAlign: 'c'
-     ,shadeClose:true
-     ,yes: function(index, layero) {
-            //点击确认按钮时的操作回调
-            var repjson,cpname;
-            var hh = parent.layer.getChildFrame('form',layer.index);
-            console.log(hh)
-            var cpname = $('#layui-layer2').find('#cpName').val()
-            console.log('cpname',cpname)
-            $.post('http://192.168.10.123:9001/addChoice',{cpname:cpname,type:2},function(data){
-                repjson = JSON.parse(data)
-                if(repjson.status == 1){
-                    parent.layer.
-                    parent.layer.close(index);
-                }else {
-                    parent.layer.msg(repjson.msg)
+                type: 1
+                , title: '添加模块'
+                , content: '<div class="layui-form" style="margin: 30px">' +
+                    '<form class="layui-form" action="">' +
+                    '<div class="layui-form-item">\n' +
+                    '<label class="layui-form-label">产品名称</label>' +
+                    '<div class="layui-inline"><select class="layui-select" style="width: 190px;display: inline-block!important;" id="cp" lay-verify="required" name="cpChoice" lay-search></select></div>' +
+                    '<div class="layui-inline"><button type="button" onclick="addcpChoice(\'cp\')" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div></div>' +
+                    '<div class="layui-form-item" id="name-mk" style="margin-top: 50px"><label class="layui-form-label">模块名称</label>' +
+                    '<input id="mkName" type="text" name="mkName" required lay-verify="required" placeholder="请输入模块名称" autocomplete="off" class="layui-input layui-input-inline"></div>' +
+                    '</form></div>'
+                // '<div class="layui-form-item"><div class="layui-input-block"><button class="layui-btn" lay-submit lay-filter="choiceDemo">添加</button></div></div>'
+                , skin: 'layui-layer-lan'
+                , area: ['500px', '400px']
+                , btn: '添加'
+                , btnAlign: 'c'
+                , shadeClose: true
+                //异步发送添加模块请求
+                , yes: function (index, layero) {
+                    //点击确认按钮时的操作回调
+                    var repjson,cpname;
+                    var cpname = layero.find('#mkName').val()
+                    var subjection = layero.find('#cp option:selected').val()
+                    $.post('http://192.168.10.123:9001/addChoice', {cpname: cpname,subjection:subjection,type: 2}, function (data) {
+                        repjson = JSON.parse(data)
+                        if (repjson.status == 1) {
+                            parent.layer.close(index);
+                        } else {
+                            parent.layer.msg(repjson.msg)
+                        }
+                    })
+                }
+                //打开添加页面是读取产品列表
+                , success: function (layero) {
+                    $.post('http://192.168.10.123:9001/queryForProduct', {}, function (data) {
+                        var pro;
+                        var _html;
+                        var pro = JSON.parse(data).data;
+                        console.log(data);
+                        for (var i = 0; i < pro.length; i++) {
+                            _html += "<option value='"+pro[i].id+"'>"+pro[i].name+"</option>"
+                        }
+                        layero.find('#cp').html(_html);
+                                })
                 }
             })
-        }
-     ,success: function(layero){
-    }
-})
     }};
+
+
+
+
