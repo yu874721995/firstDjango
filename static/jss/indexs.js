@@ -322,7 +322,18 @@ function openAdd(){
                   for (var i = 0; i < json_data.length; i++) {
                             _html += "<option value='"+json_data[i].id+"'>"+json_data[i].name+"</option>"
                         }
-                        body.find('#pid-cp').html(_html);
+                        body.find('#pid-cp').append(_html);
+
+
+
+
+
+
+
+
+
+
+
               })
 
 

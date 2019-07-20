@@ -12,11 +12,14 @@
     <link rel="stylesheet" href="./lib/layui/css/layui.css">
     <link rel="stylesheet" href="./lib/layui/css/layui.mobile.css">
     <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./lib/layui-formSelects-master/dist/formSelects-v4.css">
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="./js/our.js"></script>
-    <script type="text/javascript" src="/static/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="/static/lib/layui/layui.all.js"></script>
+    <script type="text/javascript" src="/static/lib/layui-formSelects-master/dist/formSelects-v4.js"></script>
+
 
 
 </head>
@@ -37,9 +40,7 @@
        <div class="layui-form-item">
           <label class="layui-form-label">选择目录</label>
 <!--          <input type="text" name="caseName" required lay-verify="required" placeholder="请输入用例名称" autocomplete="off" class="layui-input layui-input-inline">-->
-          <div class="layui-inline"><select id="pid-cp" lay-verify="required" name="cpChoice" lay-search></select></div>
-          <div class="layui-inline"><button type="button" onclick="addcpChoice('cp')" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div>
-          <div class="layui-inline"><select id="pid-mk" lay-verify="required" name="mkChoice" lay-search></select></div>
+          <div class="layui-inline" style="width: 50%"><select style="linkageWidth:60px" id="popcp" lay-verify="required" xm-select="select15" name="cpChoice" lay-search xm-select-radio></select></div>
           <div class="layui-inline"><button type="button" onclick="addcpChoice('mk')" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe654;</i></button></div>
       </div>
 
@@ -102,69 +103,35 @@ layui.use('form', function(){
   //监听提交
   form.on('submit(formDemo)', function(data){
       // addProducts('产品');
-    layer.msg(JSON.stringify(data.field));
+        $.post('http://192.168.10.123/SaveTestCase',data,function (result) {
+        layer.msg(result)
+    })
     return false;
   });
 });
+
+
+//动态加载产品及模块列表
+var formSelects = layui.formSelects;
+ formSelects.config('select15_2', {
+            success: function(id, url, val, result){
+                console.log("success回调: " + url);
+            },
+            error: function(id, url, val, err){
+                console.log("err回调: " + url);
+            }
+        });
+ formSelects.data('select15', 'server', {
+            //
+            //http://yapi.demo.qunar.com/mock/9813/layui/citys
+            url: 'http://192.168.10.123:9001/queryForOur',
+            linkage: true,
+            linkageWidth: 130
+        });
+
+        //如果有需要默认值的小伙伴请使用formSelects.value
+        formSelects.value('select15', [])
 </script>
 
-
-<script>layui.use(['form', 'layer','jquery'],
-            function() {
-                $ = layui.jquery;
-                var form = layui.form,
-                layer = layui.layer;
-                var username,password,json_status,json_msg;
-
-                //自定义验证规则
-                // form.verify({
-                //     nikename: function(value) {
-                //         if (value.length < 5) {
-                //             return '昵称至少得5个字符啊';
-                //         }
-                //     },
-                //     pass: [/(.+){6,12}$/, '密码必须6到12位'],
-                //     repass: function(value) {
-                //         if ($('#L_pass').val() != $('#L_repass').val()) {
-                //             return '两次密码不一致';
-                //         }
-                //     }
-                // });
-                // form.on('row(addcp)',function (obj) {
-                //     console.log(obj)
-                //     alert('hhhh')
-                // })
-
-                // //监听提交
-                // form.on('submit(add)',
-                // function(data) {
-                //     console.log(data);
-                //     //发异步，把数据提交
-                //     var username = $('#L_username').val();
-                //     var password = $('#L_pass').val();
-                //     $.post('http://192.168.10.123:9001/addUser',{username:username,password:password},function(data){
-                //         json_status = JSON.parse(data).status
-                //         json_msg = JSON.parse(data).msg
-                //         if(json_status == 1){
-                //             layer.alert("增加成功", {
-                //         icon: 6
-                //     },
-                //     function() {
-                //         //关闭当前frame
-                //         xadmin.close();
-                //
-                //         // 可以对父窗口进行刷新
-                //         xadmin.father_reload();
-                //     });
-                //         }else {
-                //             layer.msg(json_msg)
-                //         }
-                //         }
-                //     )
-                //
-                //     return false;
-                // });
-
-            });</script>
 </body>
 </html>

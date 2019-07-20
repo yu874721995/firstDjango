@@ -46,6 +46,8 @@ urlpatterns = [
     re_path('recoverCustomer',users().recoverCustomer),
     re_path('addChoice',case().addChoice),
     re_path('queryForProduct',case().queryForProduct),
+    re_path('queryForOur',case().queryForOur),
+
 
 ]
 

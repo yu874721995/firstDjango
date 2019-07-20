@@ -56,6 +56,30 @@ class caseChoice():
         print('response==================',data)
         return HttpResponse(json.dumps({'status':1, 'msg': '操作成功','data':data},cls=DateEncoder))
 
+    def queryForOur(self,request):
+        querys = models.casecp_mk.objects.filter(status=1, type=1).values()
+        data = []
+        for items in querys:
+            mores = {}
+            mores['name'] = items['name']
+            mores['value'] = items['id']
+            query = models.casecp_mk.objects.filter(status=1, type=2,subjection=items['id']).values()
+            datas = []
+            for item in query:
+                more = {}
+                more['value'] = item['id']
+                more['name'] = item['name']
+                datas.append(more)
+            mores['children'] = datas
+            data.append(mores)
+        return HttpResponse(json.dumps({'code': 0, 'data': data,'msg': 'success'}))
+
+
+
+
+
+
+
 
 
 
