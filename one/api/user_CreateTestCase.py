@@ -21,13 +21,25 @@ from django.contrib.auth.decorators import login_required
 
 class user_testCase():
 
+    def checkquery(self,*args):
+        for i in args:
+            if i == None or i is False or i == '':
+                return False
+
     def saveTestCase(self,request):
         print('-------------request_body:',request.POST)
-        url = request.POST.get('url',None)
-        data = request.POST.get('data[]',None)
-        type = request.POST.get('type',None)
-        if url == None or url is False or url == '' or data == None or data is False or data == '' or type == None or type is False or type == '':
+        caseName = request.POST.get('caseName',None)
+        cpChoice = request.POST.get('cpChoice',None)
+        caseUrl = request.POST.get('caseUrl',None)
+        method = request.POST.get('method',None)
+        body = request.POST.get('body', None)
+        header = request.POST.get('header', None)
+        assertName = request.POST.get('assertName', None)
+        assertText = request.POST.get('assertText', None)
+
+        #参数校验
+        if self.checkquery([caseName,cpChoice,caseUrl,assertName,assertText,method]) == False:
             return HttpResponse(json.dumps({'status':5,'msg':'参数错误'}))
 
-        return HttpResponse(json.dumps({'status':1,'msg':'ok'}))
+
 

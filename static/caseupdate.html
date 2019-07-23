@@ -57,7 +57,7 @@
           <label class="layui-form-label">单选框</label>
           <div class="layui-input-block">
               <input id='get' type="radio" name="method" value="1" title="get">
-              <input id='post' type="radio" name="method" value="2" title="post" >
+              <input id='post' type="radio" name="method" value="2" title="post" checked>
           </div>
       </div>
 
@@ -78,8 +78,8 @@
        <div class="layui-form-item">
            <label class="layui-form-label">断言设置</label>
 
-           <div class="layui-inline"><input type="text" name="assertName"  lay-verify="" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>
-           <div class="layui-inline"><input type="text" name="assertText"  lay-verify="" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>
+           <div class="layui-inline"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>
+           <div class="layui-inline"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>
       </div>
 
 
@@ -103,10 +103,23 @@ layui.use('form', function(){
   //监听提交
   form.on('submit(formDemo)', function(data){
       // addProducts('产品');
-        $.post('http://192.168.10.123/SaveTestCase',data,function (result) {
-        layer.msg(result)
-    })
-    return false;
+      var req = {
+          caseName:data['field']['caseName'],
+          cpChoice:data['field']['cpChoice'],
+          caseUrl:data['field']['caseUrl'],
+          method:data['field']['method'],
+          body:data['field']['body'],
+          header:data['field']['header'],
+          assertName:data['field']['assertName'],
+          assertText:data['field']['assertText']
+      };
+      $.post('http://192.168.10.123:9001/SaveTestCase',req,function(date){
+          var json_date,json_status,json_msg;
+          json_date = JSON.parse(date).data;
+          json_status = JSON.parse(date).status;
+          json_msg = JSON.parse(date).msg;
+          console.log(JSON.parse(date))
+      })
   });
 });
 
@@ -131,6 +144,7 @@ var formSelects = layui.formSelects;
 
         //如果有需要默认值的小伙伴请使用formSelects.value
         formSelects.value('select15', [])
+
 </script>
 
 </body>

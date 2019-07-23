@@ -40,6 +40,9 @@ class user_TestCase_host(models.Model):
     create_date = models.DateTimeField(default=timezone.now)
     userid = models.IntegerField()
     method = models.CharField(max_length=20, default='post')
+    subjectionId = models.CharField(max_length=200, blank=False,default='')
+
+
 
 class casecp_mk(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
@@ -60,6 +63,7 @@ class user_TestCase_body(models.Model):
 class user_Case_Assert(models.Model):
     id = models.AutoField(primary_key=True, blank=False)
     status = models.CharField(max_length=20, default=1)
-    Assert = models.CharField(max_length=200, blank=False)
+    Assert_name = models.CharField(max_length=200, blank=False,default='')
+    Assert_text = models.CharField(max_length=200, blank=False,default='')
     host_id = models.ForeignKey('user_TestCase_host', on_delete=models.CASCADE)
 

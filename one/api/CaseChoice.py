@@ -21,6 +21,10 @@ class caseChoice():
         types = request.POST.get('type',None)
         if cpname == '' or cpname == None or types == '' or types == None:
             return HttpResponse(json.dumps({'status':200, 'msg': '名称或类型不能为空'}))
+        query_cp = models.casecp_mk.objects.filter(name=cpname,status=1,type=1).values()
+        #如果已存在则无法添加
+        if len(query_cp) != 0:
+            return HttpResponse(json.dumps({'status':200, 'msg': '该产品已存在'}))
         if types == 1 or types == '1':
             try:
                 dic = {'type':'1', 'name': cpname, }
@@ -29,8 +33,13 @@ class caseChoice():
             except Exception as e:
                 print('error----------------1',e)
                 return HttpResponse(json.dumps({'status':1, 'msg': '数据库错误'}))
+
+            #添加模块
         else:
             subjection = request.POST.get('subjection',None)
+            query_mk = models.casecp_mk.objects.filter(name=cpname, status=1, type=2, subjection=subjection).values()
+            if len(query_mk) != 0:
+                return HttpResponse(json.dumps({'status':200, 'msg': '该模块已存在'}))
             if subjection == '' or subjection == None:
                 return HttpResponse(json.dumps({'status': 200, 'msg': '必须选择上级产品'}))
             try:
