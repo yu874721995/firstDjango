@@ -66,30 +66,39 @@ class req_debug():
 
             try:
                 r = requests.post(url, data=data, headers=headers)
+                print(r.text)
                 resopnse_body = r.json()
+
             except Exception as e:
+
                 print('error--------------3', e)
                 return HttpResponse(json.dumps({'status': 500, 'msg': '请求错误'}))
 
             # 存入历史
             try:
+                if user_id == 16 or user_id == '16':
+                    return HttpResponse(json.dumps({'status': 1, 'msg': '操作成功', 'data': resopnse_body}))
+
                 dic = {'host': url, 'userid': user_id, 'response_body': resopnse_body, 'method': types,'json_body':json_data,'json_header':json_header,
                        'casename': CaseName}
                 models.user_host.objects.create(**dic)
                 host = models.user_host.objects.filter(host=url).order_by('-create_date')
                 host_id = host.values()[0]['id']
+                print('存入host------------------------OK')
 
-                if body != [] and json_data == None:
+                if body != [] and json_data == '':
                     # 存入body
                     for i in body:
                         dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 1}
                         models.user_body.objects.create(**dic)
+                    print('存入body------------------------OK')
 
-                if header != [] and json_header == None:
+                if header != [] and json_header == '':
                     # 存入header
                     for i in header:
                         dic = {'key': i.split('--')[0], 'value': i.split('--')[1], 'host_id_id': host_id, 'type': 2}
                         models.user_body.objects.create(**dic)
+                    print('存入header------------------------OK')
             except Exception as e:
                 print('error----------------4',e)
                 return HttpResponse(json.dumps({'status': 500, 'msg': '请求错误' }))

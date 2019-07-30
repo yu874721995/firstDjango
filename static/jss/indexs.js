@@ -182,6 +182,8 @@ function username() {
                 }
                 if(json_response.status != 1) {
                     layer.msg(json_response.msg)
+                }else {
+                    layer.msg('操作成功')
                 }
                 userhistory();
                 var str_rep = formatJson(json_response.data)
@@ -323,22 +325,11 @@ function openAdd(){
                             _html += "<option value='"+json_data[i].id+"'>"+json_data[i].name+"</option>"
                         }
                         body.find('#pid-cp').append(_html);
-
-
-
-
-
-
-
-
-
-
-
               })
-
-
-
         }
+        ,end:function(data){
+            window.location.reload()
+            }
 })}
 
 //key不允许包含中文

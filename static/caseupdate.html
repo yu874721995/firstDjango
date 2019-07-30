@@ -77,9 +77,12 @@
 
        <div class="layui-form-item">
            <label class="layui-form-label">断言设置</label>
-
-           <div class="layui-inline"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>
-           <div class="layui-inline"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>
+           <div class="layui-input-block"  id="assert" style="margin-bottom: 0;">
+               <div class="layui-inline"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>
+               <div class="layui-inline"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>
+               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-header" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></div>
+               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm" id="add-header" onclick="add_assert()"><i class="layui-icon">&#xe654;</i></button></div>
+           </div>
       </div>
 
 
@@ -103,6 +106,11 @@ layui.use('form', function(){
   //监听提交
   form.on('submit(formDemo)', function(data){
       // addProducts('产品');
+
+      var assertNames = [];
+      var assertTexts = [];
+      $('input[name="assertName"]').each(function(){assertNames.push($(this).val())})
+      $('input[name="assertText"]').each(function(){assertTexts.push($(this).val())})
       var req = {
           caseName:data['field']['caseName'],
           cpChoice:data['field']['cpChoice'],
@@ -110,17 +118,28 @@ layui.use('form', function(){
           method:data['field']['method'],
           body:data['field']['body'],
           header:data['field']['header'],
-          assertName:data['field']['assertName'],
-          assertText:data['field']['assertText']
+          assertName:JSON.stringify(assertNames),
+          assertText:JSON.stringify(assertTexts)
       };
+      console.log(data['field'])
       $.post('http://192.168.10.123:9001/SaveTestCase',req,function(date){
-          var json_date,json_status,json_msg;
+          var json_date;
           json_date = JSON.parse(date).data;
           json_status = JSON.parse(date).status;
           json_msg = JSON.parse(date).msg;
-          console.log(JSON.parse(date))
+
+          if(json_status == 1){
+              parent.layer.msg(json_msg)
+              var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+              //关闭该弹层
+              parent.layer.close(index);
+          }else {
+              layer.msg(json_msg)
+          }
       })
+        return false
   });
+
 });
 
 
@@ -146,6 +165,6 @@ var formSelects = layui.formSelects;
         formSelects.value('select15', [])
 
 </script>
-
+    <script type="text/javascript" src="./jss/indexs.js"></script>
 </body>
 </html>

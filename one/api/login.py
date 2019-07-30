@@ -32,7 +32,7 @@ class Login():
                     request.session['username'] = username
                     request.session['user_id'] = userid
                     request.session['is_login'] = True
-                    request.session.set_expiry(30 * 60)
+                    request.session.set_expiry(30 * 60 * 24)
                     models.UserInfo.objects.filter(username=username).update(old_login_time=datetime.datetime.today())
                     response = json.dumps({'status':1,'msg':'登录成功','data':username})
                     return HttpResponse(response)
