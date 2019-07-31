@@ -77,11 +77,19 @@
 
        <div class="layui-form-item">
            <label class="layui-form-label">断言设置</label>
-           <div class="layui-input-block"  id="assert" style="margin-bottom: 0;">
-               <div class="layui-inline"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>
-               <div class="layui-inline"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>
-               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-header" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></div>
-               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm" id="add-header" onclick="add_assert()"><i class="layui-icon">&#xe654;</i></button></div>
+           <div class="layui-input-block" style="margin-bottom: 0;">
+<!--               <div class="layui-inline"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>-->
+<!--               <div class="layui-inline"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>-->
+<!--               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-assert" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></div>-->
+<!--               <div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm" id="add-assert" onclick="add_assert()"><i class="layui-icon">&#xe654;</i></button></div>-->
+               <table class="parmes-table" id="assert">
+                    <tr>
+                        <th ><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></th>
+                        <th ><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></th>
+                        <th ><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-assert" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></th>
+                        <th><button type="button" class="layui-btn layui-btn-sm" id="add-assert" onclick="add_assert()"  style="margin-left:10px;"><i class="layui-icon">&#xe654;</i></button></th>
+                    </tr>
+                  </table>
            </div>
       </div>
 

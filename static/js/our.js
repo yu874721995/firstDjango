@@ -71,11 +71,9 @@ function addcpChoice(name) {
 
 function add_assert() {
         var __html = '';
-         __html +=  '<div class="layui-form-item" style="margin-bottom: 0;">' +
-                    '<div class="layui-inline" style="margin-right:13px;"><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></div>'+
-                    '<div class="layui-inline" style="margin-right:14px;"><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></div>'+
-                    '<div class="layui-inline"><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-header" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></div>' +
-                    '</div>'
+         __html +=  '<tr><th ><input id="aseertname" type="text" name="assertName"  lay-verify="required" placeholder="请输入断言参数" autocomplete="off" class="layui-input layui-input-inline"></th>' +
+                        '<th ><input id="aseerttext"type="text" name="assertText"  lay-verify="required" placeholder="请输入断言内容" autocomplete="off" class="layui-input layui-input-inline"></th>' +
+                        '<th ><button type="button" class="layui-btn layui-btn-sm deletes" id="clear-assert" onclick="deleteassert(this)"><i class="layui-icon">&#xe640;</i></button></th></tr>'
         $("#assert").append(__html);
 }
 function deleteassert(r) {
@@ -83,6 +81,7 @@ function deleteassert(r) {
         if (i > 0) {
             document.getElementById('assert').deleteRow(i)
         }
+    // var i = $('#clear-assert')
 }
 
 

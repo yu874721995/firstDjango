@@ -37,7 +37,7 @@ urlpatterns = [
     re_path('UserHistory', users().userHistory),
     re_path(r'^accounts/login/$',indexviews.login),
     re_path('SaveTestCase',SaveCase().saveTestCase),
-    re_path('deletecase',indexviews.deletecase),
+    re_path('deleteHistory',indexviews.deleteHistory),
     re_path('userList',users().userList),
     re_path('updateUserStatus',user().updateUserStatus),
     re_path('addUser',users().add_User),
@@ -47,6 +47,7 @@ urlpatterns = [
     re_path('addChoice',case().addChoice),
     re_path('queryForProduct',case().queryForProduct),
     re_path('queryForOur',case().queryForOur),
+    re_path('caseList',case().caseList),
 
 
 ]

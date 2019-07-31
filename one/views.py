@@ -48,7 +48,7 @@ def register(request):
             return HttpResponse(json.dumps({'status': 3,
                                             'msg': '注册失败'}))
 
-def deletecase(request):
+def deleteHistory(request):
     user_id = request.session.get('user_id', None)
     if user_id is None or user_id == '1':
         return HttpResponse(json.dumps({'status': 200, 'msg': '登录超时'}))

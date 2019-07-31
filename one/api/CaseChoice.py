@@ -84,6 +84,34 @@ class caseChoice():
         return HttpResponse(json.dumps({'code': 0, 'data': data,'msg': 'success'}))
 
 
+    def caseList(self,request):
+        user_id = request.session.get('user_id',None)
+        if user_id == None:
+            return HttpResponse(json.dumps({'status':100,'msg': '登录过期'}))
+        caseHost = models.user_TestCase_host.objects.all().values()
+        data = []
+        for i in caseHost:
+            case_data = {}
+            case_data['case_id'] = i['id']
+            case_data['status'] = i['status']
+            case_data['caseName'] = i['caseName']
+            case_data['host'] = i['host']
+            case_data['create_date'] = i['create_date']
+            username = models.UserInfo.objects.filter(id=user_id).values()[0]['username']
+            case_data['username'] = username
+            case_data['method'] = i['method']
+            mk = models.casecp_mk.objects.filter(id=i['subjectionId']).values()[0]
+            cp = models.casecp_mk.objects.filter(id=mk['subjection']).values()[0]['name']
+            case_data['subjection_cp'] = cp
+            case_data['subjection_mk'] = mk
+            case_data['create_date'] = i['create_date']
+            #在这里添加assert和body、header的内容
+            ###
+            data.append(case_data)
+        print(data)
+
+        return HttpResponse(json.dumps({'status':1,'msg': '操作成功','data':{'h':1}}))
+
 
 
 
