@@ -12,7 +12,6 @@
         <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
         <script src="./lib/layui/layui.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/xadmin.js"></script>
-        <script type="text/javascript" src="./js/caseList.js"></script>
         <script type="text/javascript" src="./jss/indexs.js"></script>
 
         <style>
@@ -55,86 +54,23 @@
                             </form>
                         </div>
                         <div class="layui-card-header">
-                            <button class="layui-btn layui-btn-danger" onclick="delAll()">
-                                <i class="layui-icon"></i>批量删除</button>
-                            <button class="layui-btn" onclick="xadmin.open('添加用户','./order-add.html',800,600)">
-                                <i class="layui-icon"></i>添加</button></div>
+                            <button class="layui-btn" onclick=openAdd()>
+                                <i class="layui-icon"></i>添加</button>
+                        <button class="layui-btn layui-btn-danger" onclick=batchExecution()>
+                                <i class="layui-icon"></i>批量执行</button></div>
+
                         <div class="layui-card-body ">
-                            <table class="layui-table layui-form">
-                                <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" name="" lay-skin="primary">
-                                        </th>
-                                        <th>用例编号</th>
-                                        <th>用例名称</th>
-                                        <th>用例状态</th>
-                                        <th>用例host</th>
-                                        <th>请求方式</th>
-                                        <th>隶属产品</th>
-                                        <th>隶属模块</th>
-                                        <th>创建人</th>
-                                        <th>创建时间</th>
-                                        <th>操作</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="" lay-skin="primary"></td>
-                                        <td>xxx</td>
-                                        <td>xxxxxx:xxx</td>
-                                        <td>xx.10</td>
-                                        <td>xxx.10</td>
-                                        <td>xxx</td>
-                                        <td>xxx</td>
-                                        <td>xxx</td>
-                                        <td>xxx</td>
-                                        <td>2017-08-17 18:22</td>
-                                        <td class="td-manage">
-                                            <a title="编辑" onclick=openAdd() href="javascript:;">
-                                                <i class="layui-icon">&#xe63c;</i></a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                                <i class="layui-icon">&#xe640;</i></a>
-                                            <a title="查看data" onclick="member_del(this,'查看data的id')" href="javascript:;">
-                                                <i class="layui-icon">&#xe640;</i></a>
-                                            <a title="查看断言" onclick="member_del(this,'查看断言的id')" href="javascript:;">
-                                                <i class="layui-icon">&#xe640;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="" lay-skin="primary"></td>
+                            <table class="layui-table layui-form" id="demo">
 
-                                        <td class="td-manage">
-                                            <a title="查看" onclick="xadmin.open('编辑','order-view.html')" href="javascript:;">
-                                                <i class="layui-icon">&#xe63c;</i></a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                                <i class="layui-icon">&#xe640;</i></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" name="" lay-skin="primary"></td>
-
-                                        <td class="td-manage">
-                                            <a title="查看" onclick="xadmin.open('编辑','order-view.html')" href="javascript:;">
-                                                <i class="layui-icon">&#xe63c;</i></a>
-                                            <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
-                                                <i class="layui-icon">&#xe640;</i></a>
-                                        </td>
-                                    </tr>
+                                <tbody id="tbody">
                                 </tbody>
                             </table>
                         </div>
                         <div class="layui-card-body ">
                             <div class="page">
-                                <div>
-                                    <a class="prev" href="">&lt;&lt;</a>
-                                    <a class="num" href="">1</a>
-                                    <span class="current">2</span>
-                                    <a class="num" href="">3</a>
-                                    <a class="num" href="">489</a>
-                                    <a class="next" href="">&gt;&gt;</a></div>
+                                <div id="page">
+
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -155,6 +91,9 @@
             laydate.render({
                 elem: '#end' //指定元素
             });
+            laydate.render({
+                elem: 'input' //指定元素
+            });
         });
 
         /*用例-禁用*/
@@ -169,19 +108,40 @@
                 });
             });
         }
-
-        // function delAll(argument) {
-        //
-        //     var data = tableCheck.getData();
-        //
-        //     layer.confirm('确认要删除吗？' + data,
-        //     function(index) {
-        //         //捉到所有被选中的，发异步进行删除
-        //         layer.msg('删除成功', {
-        //             icon: 1
-        //         });
-        //         $(".layui-form-checked").not('.header').parents('tr').remove();
-        //     });
         </script>
+<script>
+layui.use('table', function(){
+  table = layui.table;
 
+  //第一个实例
+  table.render({
+    elem: '#demo'
+    ,height: 473
+      ,method:'POST'
+    ,url: 'http://192.168.10.123:9001/caseList' //数据接口
+    ,page: true //开启分页
+    ,cols: [[ //表头
+       {fixed: 'left',type:'checkbox',title: '', width:100}
+      ,{field: 'case_id', title: '用例编号', width:100, sort: true,templet:function (d){return 'Case'+d.case_id}}
+      ,{field: 'caseName', title: '用例名称', width:200}
+      ,{field: 'status', title: '用例状态', width:100, sort: true,templet:function (d){if(d.status == 1){return '启用'}else {return '禁用'}}}
+      ,{field: 'host', title: '用例host', width:350}
+      ,{field: 'method', title: '请求方式', width: 100,sort: true,templet:function (d) {if(d.method == 1){return 'GET'}else {return 'POST'}}}
+      ,{field: 'subjection_cp', title: '隶属产品', width: 100, sort: true}
+      ,{field: 'subjection_mk', title: '隶属模块', width: 127, sort: true}
+      ,{field: 'username', title: '创建人',sort: true, width: 100}
+      ,{field: 'create_date', title: '创建时间', width: 200, sort: true}
+      ,{fixed: 'right', width:150, align:'center', toolbar: '#barDemo',title:'操作'}
+    ]]
+  });
+
+});
+</script>
+<script type="text/html" id="barDemo">
+    <a title="编辑" onclick=openAdd() href="javascript:;"><i class="layui-icon">&#xe642;</i></a>
+    <a title="禁用" onclick="member_del(this,'要禁用的id')" href="javascript:;"><i class="layui-icon">&#xe640;</i></a>
+    <a title="查看data" onclick="member_del(this,'查看data的id')" href="javascript:;"><i class="layui-icon">&#xe643;</i></a>
+    <a title="查看断言" onclick="member_del(this,)" href="javascript:;"><i class="layui-icon">&#xe643;</i></a>
+</script>
+<script type="text/javascript" src="./js/caseList.js"></script>
 </html>

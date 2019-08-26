@@ -65,3 +65,11 @@ class user_Case_Assert(models.Model):
     Assert_text = models.CharField(max_length=200, blank=False,default='')
     host_id = models.ForeignKey('user_TestCase_host', on_delete=models.CASCADE)
 
+class Case_report(models.Model):
+    id = models.AutoField(primary_key=True, blank=False)
+    create_date = models.DateTimeField(default=timezone.now)
+    report_name = models.CharField(max_length=200, blank=False, default='')
+    becuxe_id = models.CharField(max_length=200, blank=False, default='')
+    type = models.CharField(max_length=10, blank=False, default=1)
+
+

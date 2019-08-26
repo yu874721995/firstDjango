@@ -9,15 +9,15 @@
 @Software: PyCharm
 '''
 import unittest
-import requests
-from ddt import ddt,file_data
+import requests,os
+from ddt import ddt,data,unpack
+from Public.logger import Logger
+from Public.a import read_yaml
 
-
+mylog = Logger('mylog').getlog()
+item = read_yaml()
 @ddt
 class Test_clubList(unittest.TestCase):
-    def case_id(self,date):
-
-        return date
 
     @classmethod
     def setUpClass(cls):
@@ -27,11 +27,11 @@ class Test_clubList(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
-    @file_data('case_date.yaml')
-    def test_case(cls,**value):
-        url = value['host']
-
-        r =requests.post()
+    @data(*item.read())
+    @unpack
+    # @file_data(os.path.abspath('.') + '/Public/case_date.yaml')
+    def test_case(cls,case_id,status,caseName,host,method,case_body,case_header,case_assert):
+        pass
 
 
 

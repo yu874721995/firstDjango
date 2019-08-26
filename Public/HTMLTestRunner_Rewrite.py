@@ -1072,12 +1072,14 @@ class HTMLTestRunner(Template_mixin):
 
 
     def run(self, test, caseinfo={}):
+        super(HTMLTestRunner,self).__init__()
         "Run the given test case or test suite."
         result = _TestResult(self.verbosity)
         test(result)
+        # print(test(result))
         self.stopTime = datetime.datetime.now()
         self.generateReport(test, result, caseinfo)
-        print (sys.stderr, '\nTime Elapsed: %s' % (self.stopTime-self.startTime))
+        # print (sys.stderr, '\nTime Elapsed: %s' % (self.stopTime-self.startTime))
         return result
 
 
@@ -1189,7 +1191,10 @@ class HTMLTestRunner(Template_mixin):
             )
             rows.append(row)
             i = 0
+            # print(cls_results)
             for tid, (n,t,o,e) in enumerate(cls_results):
+                if len(self.test_name) == i:
+                    break
                 self._generate_report_test(rows, cid, tid, n, t, o, e, caseinfo,case_name=self.test_name[i])
                 i += 1
 
@@ -1233,9 +1238,9 @@ class HTMLTestRunner(Template_mixin):
             ue = e
 
         output = saxutils.escape(uo+ue)
-        print (output)
+        # print (output)
         unum = str(output).find('screenshot')
-        print (unum)
+        # print (unum)
         if (unum!=-1):
             hidde_status = ''
             unum=str(output).find('screenshot')
