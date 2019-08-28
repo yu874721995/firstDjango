@@ -27,7 +27,7 @@ LANGUAGE_CODE='zh-CN'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['http://127.0.0.1:9001']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -59,7 +59,7 @@ MIDDLEWARE = [
 '''配置跨域请求中间件参数------begin'''
 CORS_ALLON_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = ('*')
+CORS_ORIGIN_WHITELIST = ('http://127.0.0.1:9001')
 CORS_ALLOW_METHODS = (
     'DELETE',
     'GET',
