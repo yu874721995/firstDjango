@@ -27,7 +27,7 @@ LANGUAGE_CODE='zh-CN'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['http://127.0.0.1:9001']
 
 
 # Application definition
