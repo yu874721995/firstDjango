@@ -58,19 +58,19 @@ urlpatterns = [
 
 
 
-
-from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
-from one.siteathome import task
-
-sched = BackgroundScheduler()
-sched.add_jobstore(DjangoJobStore(),'default')
-
-@register_job(sched,'cron',second='10')
-def my_task():
-    task.deletesession()
-try:
-    register_events(sched)
-    sched.start()
-except Exception as e:
-    sched.shutdown()
+#
+# from apscheduler.schedulers.background import BackgroundScheduler
+# from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+# from one.siteathome import task
+#
+# sched = BackgroundScheduler()
+# sched.add_jobstore(DjangoJobStore(),'default')
+#
+# @register_job(sched,'cron',second='10')
+# def my_task():
+#     task.deletesession()
+# try:
+#     register_events(sched)
+#     sched.start()
+# except Exception as e:
+#     sched.shutdown()
